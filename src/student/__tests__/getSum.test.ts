@@ -6,11 +6,12 @@ type GetSumTestType = {
   expected: GetSumResType
 }
 
-const tests: GetSumTestType[] = [{ params: { a: 1, b: 2 }, options: {}, expected: 3 }]
+const tests: GetSumTestType[] = [{ params: { a: 1, b: 3 }, options: {}, expected: 4 }]
 
 /**
  * @Description Test to challenge function getSum
- * @test yarn jest getSum.test.ts --coverage --collectCoverageFrom="src/Shared/getSum.ts"
+ * @test yarn jest getSum.test.ts --coverage --collectCoverageFrom="src/student/algorythms/getSum.ts"
+ * @test yarn jest getPathNextTask.test.ts --coverage --collectCoverageFrom="src/Shared/getPathNextTask.ts"
  *    In debugging mode:
  *       node --inspect-brk getSum.test.ts
  *       chrome://inspect/#devices > Open dedicated DevTools for Node
