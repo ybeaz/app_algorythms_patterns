@@ -15,7 +15,7 @@ const tests: GetTemplateSimpleFuncTestType[] = [{ params: '', options: {}, expec
 
 /**
  * @Description Test to challenge function getTemplateSimpleFunc
- * @test yarn jest getTemplateSimpleFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateSimpleFunc.ts"
+ * @test yarn jest getTemplateSimpleFunc.test.ts --coverage --collectCoverageFrom="src/student/algorythms/getTemplateSimpleFunc.ts"
  *    In debugging mode:
  *       node --inspect-brk getTemplateSimpleFunc.test.ts
  *       chrome://inspect/#devices > Open dedicated DevTools for Node
