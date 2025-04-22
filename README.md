@@ -6,9 +6,14 @@ This is repository for learning Javascript, Typescript, algorythms, programming 
 
 ## How to
 
+### How to install git on Windows 
+
+1. CMD > `winget install --id Git.Git -e --source winget` 
+2. automatic installing 
+
 ### How to generate SSH key
 
-1. Browser > https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+1. [info] Browser > https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 2. Terminal > `ssh-keygen -t ed25519 -C "your_yourEmail!!!!"` (instead of yourEmail!!!! - write your email) [generate SSH keys]
 3. Finder > folder admin > shift + command + `.` > `.ssh` > check keys (2 files with names which includes numbers. For example `id_ed25519.pub`)
 
@@ -24,7 +29,7 @@ cd - change folder to another current folder. (for example: cd Dev - change to D
 
 ### How to clone repository
 
-1. Terminal > paste `eval $(ssh-agent -s); ssh-add ~/.ssh/id_ed25519\n`
+1. Terminal > paste `eval $(ssh-agent -s); ssh-add ~/.ssh/id_ed25519`
 2. Terminal > paste `git clone git@github.com:ybeaz/app_ts_algorythms_patterns.git`
 
 ### How to indtall npm modules
