@@ -8,6 +8,7 @@
   "module": "src/index.tsx",
   "unpkg": "src/lib.min.tsx",
   "typings": "src/index.d.ts",
+  "type": "module",
   "files": [
     "src/**/*"
   ],
