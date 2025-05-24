@@ -1,0 +1,12 @@
+[BASIC]
+variable-naming-style=any
+method-naming-style=any
+function-naming-style=any
+module-naming-style=any
+[FORMAT]
+indent-string='  '
+argument-naming-style=any
+variable-naming-style=any
+[MESSAGES CONTROL]
+disable=missing-function-docstring
+disable=missing-module-docstring

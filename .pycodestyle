@@ -1,0 +1,5 @@
+count = False
+max-line-length = 80
+statistics = True
+min-lines-between-methods = 4
+max-lines-between-methods = 4
