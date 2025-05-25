@@ -1,5 +1,5 @@
 from typing import TypedDict, Union, Any, Dict, List, Tuple
-from src.sharedPy.getItPrinted import getItPrinted as PRINT
+from src.sharedPy.getItPrinted import getItPrinted as PRINT, PRINTP, comment
 from src.roman.isInteger import isInteger
 import math
 
