@@ -1,18 +1,18 @@
-import { getUniqArr } from '../getUniqArr'
+import { get080UniqArr } from '../get080UniqArr'
 
 /**
  * @Description Test to challenge function isInteger
- * @test yarn jest src/roman/__tests__/getUniqArr.test.ts --coverage --collectCoverageFrom="src/roman/getUniqArr.ts"
+ * @test yarn jest src/roman/algorythms/__tests__/get080UniqArr.test.ts --coverage --collectCoverageFrom="src/roman/algorythms/get080UniqArr.ts"
  *    In debugging mode:
  *       node --inspect-brk isInteger.test.ts
  *       chrome://inspect/#devices > Open dedicated DevTools for Node
  */
 
-describe('getUniqArr function', () => {
+describe('get080UniqArr function', () => {
   it('should return an empty array when input array is empty', () => {
     const input: any[] = []
     const expected: any[] = []
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 
   it('should return an array with unique objects', () => {
@@ -27,7 +27,7 @@ describe('getUniqArr function', () => {
       { id: 2, name: 'Jane' },
       { id: 3, name: 'Bob' },
     ]
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 
   it('should return an array with unique objects when objects have different properties', () => {
@@ -42,7 +42,7 @@ describe('getUniqArr function', () => {
       { id: 2, name: 'Jane', age: 25 },
       { id: 3, name: 'Bob', age: 40 },
     ]
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 
   it('should return an array with unique objects when objects have nested properties', () => {
@@ -57,24 +57,24 @@ describe('getUniqArr function', () => {
       { id: 2, name: 'Jane', address: { street: '456 Elm St' } },
       { id: 3, name: 'Bob', address: { street: '789 Oak St' } },
     ]
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 
   it('should throw an error when input is not an array', () => {
     const input = 'not an array'
     // @ts-expect-error
-    expect(() => getUniqArr(input)).toThrowError()
+    expect(() => get080UniqArr(input)).toThrowError()
   })
 
   it('should return unique values for array with numbers and strings', () => {
     const input = [1, 2, 1, 'min', 'max', 'max', 'min']
     const expected = [1, 2, 'min', 'max']
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 
   it('should return unique values for array with numbers, null, and empty strings', () => {
     const input = [0, null, null, 0, -1, '', '', -1]
     const expected = [0, null, -1, '']
-    expect(getUniqArr(input)).toEqual(expected)
+    expect(get080UniqArr(input)).toEqual(expected)
   })
 })

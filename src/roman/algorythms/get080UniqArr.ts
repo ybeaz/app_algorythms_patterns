@@ -4,7 +4,7 @@
  * @returns A new array containing only unique objects from the input array.
  */
 
-export const getUniqArr = (arr: any[]): any[] => {
+export const get080UniqArr = (arr: any[]): any[] => {
   if (!Array.isArray(arr)) throw Error('Input is not an array')
   const arrToObj = arr.reduce((accum: any, item: any) => {
     if (!accum.hasOwnProperty(JSON.stringify(item))) accum[JSON.stringify(item)] = true

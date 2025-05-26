@@ -2,7 +2,7 @@ from typing import TypedDict, Union, Any, Dict, List, Tuple
 import json
 from src.sharedPy.getItPrinted import getItPrinted as PRINT, PRINTP, comment
 
-def getUniqArrBy(props: List, arr: List):
+def get090UniqArrBy(props: List, arr: List):
   if(isinstance(arr, list) != True):
     raise ValueError("arr: must be a List")
   if(isinstance(props, list) != True):

@@ -1,7 +1,7 @@
 from typing import TypedDict, Union, Any, Dict, List, Tuple
 from src.sharedPy.getItPrinted import getItPrinted as PRINT
 
-def isInteger(**kwargs) -> bool:
+def is060Integer(**kwargs) -> bool:
   ''' Description: Function check if num is integer
     Import: from src.roman.isInteger import isInteger
     Run: python -m src.roman.isInteger
@@ -27,7 +27,7 @@ if __name__ == "__main__":
   for kwargs in kwargsList:
     if not isinstance(kwargs, dict):
       raise ValueError("kwargs must be a dictionary")
-    output: bool = isInteger(**kwargs)
+    output: bool = is060Integer(**kwargs)
     num = kwargs['num']
     expected = kwargs['expected']
     # PRINT({'num': num, 'expected': expected, 'output': output}, 'isInteger')

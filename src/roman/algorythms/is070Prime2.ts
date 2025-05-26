@@ -1,4 +1,4 @@
-export const isPrime2 = (num: number): num is number & boolean => {
+export const is070Prime2 = (num: number): num is number & boolean => {
   if (Number.isNaN(num) || typeof num !== 'number') return false
 
   if (num <= 1) return false
