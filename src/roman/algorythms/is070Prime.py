@@ -1,12 +1,12 @@
 from typing import TypedDict, Union, Any, Dict, List, Tuple
 from src.sharedPy.getItPrinted import getItPrinted as PRINT, PRINTP, comment
-from src.roman.isInteger import isInteger
+from src.roman.algorythms.is060Integer import is060Integer
 import math
 
-def isPrime(**kwargs) -> bool:
+def is070Prime(**kwargs) -> bool:
   ''' Description: Function check if num is prime
-    Import: from src.roman.isPrime import isPrime
-    Run: python -m src.roman.isPrime
+    Import: from src.roman.algorythms.isPrime import isPrime
+    Run: python -m src.roman.algorythms.isPrime
   '''
   try:
     if kwargs['num'] <= 1:
@@ -14,7 +14,7 @@ def isPrime(**kwargs) -> bool:
     
     half = math.ceil(kwargs['num'] / 2)
     for item in range(2, half):
-      if isInteger(num=kwargs['num']/item):
+      if is060Integer(num=kwargs['num']/item):
         return False
     
     return isinstance(kwargs['num'], (int))
@@ -42,7 +42,7 @@ if __name__ == "__main__":
   for kwargs in kwargsList:
     if not isinstance(kwargs, dict):
       raise ValueError("kwargs must be a dictionary")
-    output: bool = isPrime(**kwargs)
+    output: bool = is070Prime(**kwargs)
     num = kwargs['num']
     expected = kwargs['expected']
     # PRINT({'num': num, 'expected': expected, 'output': output}, 'isPrime')

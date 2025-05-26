@@ -1,4 +1,4 @@
-export const getUniqArrBy = (props: string[], arr: any[]): any[] => {
+export const get090UniqArrBy = (props: string[], arr: any[]): any[] => {
   if (!Array.isArray(arr)) throw Error('not an array')
 
   const obj = arr.reduce((accum: any, item: any) => {

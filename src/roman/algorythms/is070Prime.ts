@@ -1,4 +1,4 @@
-export const isPrime = (num: number): num is number => {
+export const is070Prime = (num: number): num is number => {
   const half = Math.ceil(num / 2)
 
   let output = true
