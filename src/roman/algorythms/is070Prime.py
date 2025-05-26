@@ -5,8 +5,8 @@ import math
 
 def is070Prime(**kwargs) -> bool:
   ''' Description: Function check if num is prime
-    Import: from src.roman.isPrime import isPrime
-    Run: python -m src.roman.isPrime
+    Import: from src.roman.algorythms.isPrime import isPrime
+    Run: python -m src.roman.algorythms.isPrime
   '''
   try:
     if kwargs['num'] <= 1:

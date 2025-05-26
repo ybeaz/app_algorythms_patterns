@@ -3,8 +3,8 @@ from src.sharedPy.getItPrinted import getItPrinted as PRINT, PRINTP, comment
 
 def get080UniqArr(**kwargs) -> list:
   ''' Description: Function check if num is integer
-    Import: from src.roman.getUniqArr import getUniqArr
-    Run: python -m src.roman.getUniqArr
+    Import: from src.roman.algorythms.getUniqArr import getUniqArr
+    Run: python -m src.roman.algorythms.getUniqArr
   '''
   if isinstance(kwargs['arr'], list) != True: raise ValueError('Input is not an array')
   if len(kwargs['arr']) == 0: return kwargs['arr']

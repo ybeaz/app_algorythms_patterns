@@ -35,12 +35,10 @@ describe('get120GreatestDivisorTwoNumbers function', () => {
     expect(get120GreatestDivisorTwoNumbers(12, 0)).toBe(1)
   })
 
-  // it('should throw an error when one of the numbers is not an integer', () => {
-  //   // @ts-expect-error
-  //   expect(() => get120GreatestDivisorTwoNumbers(12, 3.5)).toThrowError();
-  //   // @ts-expect-error
-  //   expect(() => get120GreatestDivisorTwoNumbers(3.5, 12)).toThrowError();
-  // });
+  it('should throw an error when one of the numbers is not an integer', () => {
+    expect(() => get120GreatestDivisorTwoNumbers(12, 3.5)).toThrow()
+    expect(() => get120GreatestDivisorTwoNumbers(3.5, 12)).toThrow()
+  })
 
   // it('should throw an error when one of the numbers is not a number', () => {
   //   // @ts-expect-error

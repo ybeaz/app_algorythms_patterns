@@ -5,7 +5,7 @@ from src.roman.algorythms.get090UniqArrBy import get090UniqArrBy
 
 class TestGetUniqArrBy(unittest.TestCase):
   ''' Description: Function check if num is integer
-  Run: python -m src.roman.__tests__.getUniqArrByTest
+    Run: python -m src.roman.algorythms.__tests__.get090UniqArrByTest
   '''
   def test_getUniqArrBy(self):
     # Test case 1: Unique objects based on provided properties
@@ -149,7 +149,7 @@ class TestGetUniqArrBy(unittest.TestCase):
           get090UniqArrBy(props, input_data)  # type: ignore
 
 if __name__ == '__main__':
-    cov = coverage.Coverage(omit=['src/roman/get090UniqArrBy.py:1-5']) # seems does not work
+    cov = coverage.Coverage(omit=['src/roman/algorythms/get090UniqArrBy.py:1-5']) # seems does not work
     cov.start()
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(unittest.makeSuite(TestGetUniqArrBy))
