@@ -30,3 +30,13 @@ const getSum: GetSumType = (params: GetSumParamsType, options?: GetSumOptionsTyp
 
 export { getSum }
 export type { GetSumParamsType, GetSumOptionsType, GetSumResType, GetSumType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/student/algorythms/getSum.ts
+ */
+if (require.main === module) {
+  ;(async () => {
+    getSum({ a: 1, b: 2 })
+  })()
+}
