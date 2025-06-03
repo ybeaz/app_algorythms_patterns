@@ -3,6 +3,9 @@
     {
       "path": ".",
     },
+    {
+      "path": "../manuals/.",
+    },
   ],
   "settings": {
     "editor.accessibilitySupport": "off",
