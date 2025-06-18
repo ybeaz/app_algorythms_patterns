@@ -1,69 +1,35 @@
-type GetAreaParam03 = {
+type KnownVarsType = 'a' | 'l' | 'w' | 'r' | 'b' | 'h'
+
+type GetAreaParamProps05Type = {
   shape: string
-  [x: string]: unknown
   a: number
   l: number
   w: number
   r: number
   b: number
   h: number
+  [x: string]: number | string
 }
 
-const calculateArea03 = async ({ shape, a, l, w, r, b, h }: GetAreaParam03): Promise<string | number> => {
-  switch (shape) {
-    case 'square': {
-      return new Promise((resolve, reject) => {
-        try {
-          // if (a === undefined) reject(new Error('-1'))
-          // else
-          resolve(Math.pow(a, 2).toFixed(2))
-        } catch (error: unknown) {
-          reject(new Error('-1'))
-        }
-      })
-    }
-    case 'circle': {
-      return new Promise((resolve, reject) => {
-        try {
-          if (r === undefined) reject(new Error('-1'))
-          else resolve((Math.pow(r, 2) * 3.14).toFixed(2))
-        } catch (error: unknown) {
-          reject(new Error('-1'))
-        }
-      })
-    }
-    case 'rectangle': {
-      return new Promise((resolve, reject) => {
-        try {
-          if (l === undefined || w === undefined) reject(new Error('-1'))
-          else resolve((l * w).toFixed(2))
-        } catch (error: unknown) {
-          reject(new Error('-1'))
-        }
-      })
-    }
-    case 'triangle': {
-      return new Promise((resolve, reject) => {
-        try {
-          if (b === undefined || h === undefined) reject(new Error('-1'))
-          else resolve((b * h * 0.5).toFixed(2))
-        } catch (error: unknown) {
-          reject(new Error('-1'))
-        }
-      })
-    }
-    default:
-      return Promise.reject(new Error('-1'))
+interface PetCalculation5 {
+  (params: GetAreaParamProps05Type): number
+}
+
+// shape, a, l, w, r, b, h
+const getCalculation: PetCalculation5 = ({ shape, a, l, w, r, b, h }) => {
+  const DICT: Record<string, (params: GetAreaParamProps05Type) => number> = {
+    square: ({ shape, a, l, w, r, b, h }) => Math.pow(a, 2),
+    rectangle: ({ shape, a, l, w, r, b, h }) => l * w,
+    circle: ({ shape, a, l, w, r, b, h }) => Math.pow(r, 2) * 3.14,
+    triangle: ({ shape, a, l, w, r, b, h }) => b * h * 0.5,
   }
+
+  return DICT[shape]({ shape, a, l, w, r, b, h })
 }
 
-const getAreasPromise03 = async (params: GetAreaParam03[]): Promise<(number | string)[]> => {
+const getAreasPromise05 = async (params: GetAreaParamProps05Type[]): Promise<(string | number)[]> => {
   try {
-    return await Promise.all(
-      params.map(async (item: GetAreaParam03) => {
-        return await calculateArea03(item)
-      })
-    )
+    return await Promise.all(params.map(async (param: GetAreaParamProps05Type) => getCalculation(param)?.toFixed(2)))
   } catch (error) {
     return [-1]
   }
@@ -71,12 +37,12 @@ const getAreasPromise03 = async (params: GetAreaParam03[]): Promise<(number | st
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get213AreasPromise03.ts
+ * @run ts-node src/roman/algorythms/get213AreasPromise05.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: Partial<GetAreaParam03>[]
+      params: Partial<GetAreaParamProps05Type>[]
       expected: (string | number)[]
     }
     const examples: ExampleType[] = [
@@ -114,7 +80,7 @@ if (require.main === module) {
       examples.map(async (example: ExampleType, index: number) => {
         const { params, expected } = example
 
-        const output = await getAreasPromise03(params as GetAreaParam03[])
+        const output = await getAreasPromise05(params as GetAreaParamProps05Type[])
         console.info(`getTemplateFunc [61-${index}]`, {
           params,
           output,
@@ -124,7 +90,7 @@ if (require.main === module) {
       })
     )
 
-    console.info('get213AreasPromise03 [124]', { output })
+    console.info('get213AreasPromise05 [124]', { output })
   })()
 }
 
