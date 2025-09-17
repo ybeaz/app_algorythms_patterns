@@ -79,6 +79,7 @@
     "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "xml-js": "^1.6.11",
+    "yourails_common": "^0.18.3",
     "zlib": "^1.0.5"
   },
   "devDependencies": {
@@ -133,7 +134,6 @@
     "yalc": "^1.0.0-pre.53"
   },
   "engines": {
-    "node": "v20.18.0",
-    "npm": "10.8.2"
+    "node": "v20.19.2"
   }
 }
