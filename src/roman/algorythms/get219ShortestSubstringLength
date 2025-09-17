@@ -1,0 +1,81 @@
+/\*
+
+- Complete the 'shortestSubstring' function below.
+-
+- The function is expected to return an INTEGER.
+- The function accepts STRING givenString as parameter.
+  \*/
+
+/\*
+**Shortest Substring Containing Characters**
+
+Given a string made up of lowercase letters from 'a' to 'z', determine the length of the shortest substring that includes at least one of each distinct letter present in the string.
+
+### Example
+
+_givenString = dabbcabcd_
+
+The list of all characters in the string is _[a, b, c, d]_.
+
+Two of the substrings that contain all letters are _dabbc_ and _abcd_.
+
+The shortest substring that contains all of the letters is _4_ characters long. Return _4_ as the answer.
+
+### Function Description
+
+Complete the function **shortestSubstring** in the editor with the following parameter(s):
+
+- **string givenString:** the string
+
+### Returns
+
+- **int:** the length of the shortest substring that contains at least one of each character in _givenString_
+
+### Constraints
+
+- 1 ≤ size of givenString ≤ 10^5
+- each givenString[i] is in the set ascii[a-z]
+
+### Input Format For Custom Testing
+
+The first line contains a string, _givenString_.
+
+### Sample Case 0
+
+**Sample Input**
+
+```
+bab
+```
+
+**Sample Output**
+
+```
+2
+```
+
+**Explanation**
+
+"ba" is a substring that contains all the characters in _givenString_.
+
+### Sample Case 1
+
+**Sample Input**
+
+```
+asdfkjeghfalawefhaef
+```
+
+**Sample Output**
+
+```
+13
+```
+
+**Explanation**
+
+The 11 distinct characters in _givenString_ are [a, d, e, f, g, h, j, k, l, s, w]. The shortest substring with all of the characters is 13 characters long: _sdfkjeghfalaw_.
+
+If you want, I can help you further with implementing the solution or anything else!
+
+\*/
