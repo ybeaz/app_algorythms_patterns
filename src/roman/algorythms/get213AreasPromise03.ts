@@ -9,6 +9,7 @@ type GetAreaParam03 = {
   h: number
 }
 
+// @
 const calculateArea03 = async ({ shape, a, l, w, r, b, h }: GetAreaParam03): Promise<string | number> => {
   switch (shape) {
     case 'square': {

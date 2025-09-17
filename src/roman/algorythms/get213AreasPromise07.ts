@@ -1,50 +1,17 @@
+// @ts-nocheck
+
 // shape, a, l, w, r, b, h
 
-type GetAreaParamProps06Type = {
-  shape: string
-  a: number
-  l: number
-  w: number
-  r: number
-  b: number
-  h: number
-}
-
-const getCalculated06 = ({ shape, a, l, w, r, b, h }: GetAreaParamProps06Type) => {
-  switch (shape) {
-    case 'square': {
-      return Math.pow(a, 2).toFixed(2)
-    }
-    case 'rectangle': {
-      return (l * w).toFixed(2)
-    }
-    case 'circle': {
-      return (3.14 * Math.pow(r, 2)).toFixed(2)
-    }
-    case 'triangle': {
-      return ((b * h) / 2).toFixed(2)
-    }
-    default:
-      throw new Error('Error')
-  }
-}
-
-const getAreasPromise06 = async (params: GetAreaParamProps06Type[]): Promise<(string | number)[]> => {
-  try {
-    return Promise.all(params.map((param: GetAreaParamProps06Type) => getCalculated06(param)))
-  } catch (_) {
-    return [-1]
-  }
-}
+const getAreasPromise07 = async (params: GetAreaParamProps07Type[]): Promise<(string | number)[]> => {}
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get213AreasPromise06.ts
+ * @run ts-node src/roman/algorythms/get213AreasPromise07.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: Partial<GetAreaParamProps06Type>[]
+      params: Partial<GetAreaParamProps07Type>[]
       expected: (string | number)[]
     }
     const examples: ExampleType[] = [
@@ -83,7 +50,7 @@ if (require.main === module) {
       examples.map(async (example: ExampleType, index: number) => {
         const { params, expected } = example
 
-        const output = await getAreasPromise06(params as GetAreaParamProps06Type[])
+        const output = await getAreasPromise07(params as GetAreaParamProps07Type[])
         console.info(`getTemplateFunc [61-${index}]`, {
           params,
           output,
@@ -93,7 +60,7 @@ if (require.main === module) {
       })
     )
 
-    console.info('get213AreasPromise06 [124]', { output })
+    console.info('get213AreasPromise07 [124]', { output })
   })()
 }
 
@@ -135,7 +102,7 @@ The specifications of the promise returned by calculateArea are as follows:
 Constraints
 
      1 ≤ number of shapes  ≤ 2000
-     1  ≤ length of sides for all shapes  ≤ 106
+     1  ≤ length of sides for all shapes  ≤ 107
 
  
 Input Format For Custom Testing
