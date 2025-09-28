@@ -1,7 +1,6 @@
 /**
  * @description Pattern: PrototypeA fully initialized instance to be copied or cloned
- * @narrative
-      The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of fully initialized copies or clones. Here are some use cases for applying the Prototype pattern:
+ * @narrative The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of fully initialized copies or clones. Here are some use cases for applying the Prototype pattern:
 
       Avoiding Costly Object Creation:
 
@@ -51,3 +50,67 @@
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 04_Prototype.test`
  */
+
+import { consoler } from 'yourails_common'
+
+type GetTemplateFuncParamsType = any
+
+type GetTemplateFuncOptionsType = { funcParent?: string }
+
+type GetTemplateFuncResType = any
+
+interface GetTemplateFuncType {
+  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+}
+
+const optionsDefault: Required<GetTemplateFuncOptionsType> = {
+  funcParent: 'getTemplateFunc',
+}
+
+/**
+ * @description Function to getTemplateFunc
+ * @import import {
+    getTemplateFunc,
+    GetTemplateFuncParamsType,
+    GetTemplateFuncResType 
+  } from './getTemplateFunc'
+ */
+
+const getTemplateFunc: GetTemplateFuncType = (
+  params: GetTemplateFuncParamsType,
+  options: GetTemplateFuncOptionsType = optionsDefault
+) => {
+  return ''
+}
+
+export { getTemplateFunc }
+export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/Shared/getTemplateFunc.ts
+ * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ */
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      params: GetTemplateFuncParamsType
+      options: GetTemplateFuncOptionsType
+      expected: GetTemplateFuncResType
+    }
+    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { params, options, expected } = example
+
+      const output = await getTemplateFunc(params, options)
+      consoler(`getTemplateFunc [61-${index}]`, {
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}

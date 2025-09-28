@@ -1,7 +1,6 @@
 /**
  * @description Pattern: Template Method Defer the exact steps of an algorithm to a subclass
- * @narrative
-      The Template Method Pattern is a behavioral design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure. Here are some common use cases for applying the Template Method Pattern:
+ * @narrative The Template Method Pattern is a behavioral design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure. Here are some common use cases for applying the Template Method Pattern:
 
       Algorithm Frameworks:
 
@@ -66,3 +65,67 @@
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 22_Template.test`
  */
+
+import { consoler } from 'yourails_common'
+
+type GetTemplateFuncParamsType = any
+
+type GetTemplateFuncOptionsType = { funcParent?: string }
+
+type GetTemplateFuncResType = any
+
+interface GetTemplateFuncType {
+  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+}
+
+const optionsDefault: Required<GetTemplateFuncOptionsType> = {
+  funcParent: 'getTemplateFunc',
+}
+
+/**
+       * @description Function to getTemplateFunc
+       * @import import {
+          getTemplateFunc,
+          GetTemplateFuncParamsType,
+          GetTemplateFuncResType 
+        } from './getTemplateFunc'
+       */
+
+const getTemplateFunc: GetTemplateFuncType = (
+  params: GetTemplateFuncParamsType,
+  options: GetTemplateFuncOptionsType = optionsDefault
+) => {
+  return ''
+}
+
+export { getTemplateFunc }
+export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/Shared/getTemplateFunc.ts
+ * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ */
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      params: GetTemplateFuncParamsType
+      options: GetTemplateFuncOptionsType
+      expected: GetTemplateFuncResType
+    }
+    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { params, options, expected } = example
+
+      const output = await getTemplateFunc(params, options)
+      consoler(`getTemplateFunc [61-${index}]`, {
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}

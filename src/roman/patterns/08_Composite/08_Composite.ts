@@ -1,7 +1,6 @@
 /**
  * @description Pattern: Composite	A tree structure of simple and composite objects
- * @narrative
-      The Composite Pattern is a structural design pattern that allows you to compose objects into tree structures to represent part-whole hierarchies. It enables clients to treat individual objects and compositions of objects uniformly. Here are some common use cases for applying the Composite Pattern:
+ * @narrative The Composite Pattern is a structural design pattern that allows you to compose objects into tree structures to represent part-whole hierarchies. It enables clients to treat individual objects and compositions of objects uniformly. Here are some common use cases for applying the Composite Pattern:
 
       Graphic User Interface (GUI) Components:
 
@@ -61,3 +60,67 @@
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 08_Composite.test`
  */
+
+import { consoler } from 'yourails_common'
+
+type GetTemplateFuncParamsType = any
+
+type GetTemplateFuncOptionsType = { funcParent?: string }
+
+type GetTemplateFuncResType = any
+
+interface GetTemplateFuncType {
+  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+}
+
+const optionsDefault: Required<GetTemplateFuncOptionsType> = {
+  funcParent: 'getTemplateFunc',
+}
+
+/**
+       * @description Function to getTemplateFunc
+       * @import import {
+          getTemplateFunc,
+          GetTemplateFuncParamsType,
+          GetTemplateFuncResType 
+        } from './getTemplateFunc'
+       */
+
+const getTemplateFunc: GetTemplateFuncType = (
+  params: GetTemplateFuncParamsType,
+  options: GetTemplateFuncOptionsType = optionsDefault
+) => {
+  return ''
+}
+
+export { getTemplateFunc }
+export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/Shared/getTemplateFunc.ts
+ * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ */
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      params: GetTemplateFuncParamsType
+      options: GetTemplateFuncOptionsType
+      expected: GetTemplateFuncResType
+    }
+    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { params, options, expected } = example
+
+      const output = await getTemplateFunc(params, options)
+      consoler(`getTemplateFunc [61-${index}]`, {
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}

@@ -1,7 +1,6 @@
 /**
  * @description A fine-grained instance used for efficient sharing
- * @narrative 
-      Flyweight pattern is a structural design pattern that aims to minimize memory usage or computational expenses by sharing as much as possible with related objects. The key idea is to use a shared object to represent multiple similar objects, rather than creating a new instance for each occurrence. The use cases for applying the Flyweight pattern often involve scenarios where there are a large number of similar objects, and memory or performance optimization is crucial. Here are some use cases for applying the Flyweight pattern:
+ * @narrative Flyweight pattern is a structural design pattern that aims to minimize memory usage or computational expenses by sharing as much as possible with related objects. The key idea is to use a shared object to represent multiple similar objects, rather than creating a new instance for each occurrence. The use cases for applying the Flyweight pattern often involve scenarios where there are a large number of similar objects, and memory or performance optimization is crucial. Here are some use cases for applying the Flyweight pattern:
 
       Text Editors and Word Processors:
 
@@ -53,3 +52,67 @@
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 11_Flyweight.test` 
  */
+
+import { consoler } from 'yourails_common'
+
+type GetTemplateFuncParamsType = any
+
+type GetTemplateFuncOptionsType = { funcParent?: string }
+
+type GetTemplateFuncResType = any
+
+interface GetTemplateFuncType {
+  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+}
+
+const optionsDefault: Required<GetTemplateFuncOptionsType> = {
+  funcParent: 'getTemplateFunc',
+}
+
+/**
+       * @description Function to getTemplateFunc
+       * @import import {
+          getTemplateFunc,
+          GetTemplateFuncParamsType,
+          GetTemplateFuncResType 
+        } from './getTemplateFunc'
+       */
+
+const getTemplateFunc: GetTemplateFuncType = (
+  params: GetTemplateFuncParamsType,
+  options: GetTemplateFuncOptionsType = optionsDefault
+) => {
+  return ''
+}
+
+export { getTemplateFunc }
+export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/Shared/getTemplateFunc.ts
+ * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ */
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      params: GetTemplateFuncParamsType
+      options: GetTemplateFuncOptionsType
+      expected: GetTemplateFuncResType
+    }
+    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { params, options, expected } = example
+
+      const output = await getTemplateFunc(params, options)
+      consoler(`getTemplateFunc [61-${index}]`, {
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}

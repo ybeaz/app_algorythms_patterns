@@ -1,7 +1,6 @@
 /**
  * @description Pattern: Interpreter  A way to include language elements in a program
- * @narrative
-      The Interpreter Pattern is a behavioral design pattern that defines a grammar for interpreting the sentences in a language and provides an interpreter to interpret the sentences. Here are some common use cases for applying the Interpreter Pattern:
+ * @narrative The Interpreter Pattern is a behavioral design pattern that defines a grammar for interpreting the sentences in a language and provides an interpreter to interpret the sentences. Here are some common use cases for applying the Interpreter Pattern:
 
       Query Languages:
 
@@ -68,3 +67,67 @@
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 15_Interpreter.test`
  */
+
+import { consoler } from 'yourails_common'
+
+type GetTemplateFuncParamsType = any
+
+type GetTemplateFuncOptionsType = { funcParent?: string }
+
+type GetTemplateFuncResType = any
+
+interface GetTemplateFuncType {
+  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+}
+
+const optionsDefault: Required<GetTemplateFuncOptionsType> = {
+  funcParent: 'getTemplateFunc',
+}
+
+/**
+       * @description Function to getTemplateFunc
+       * @import import {
+          getTemplateFunc,
+          GetTemplateFuncParamsType,
+          GetTemplateFuncResType 
+        } from './getTemplateFunc'
+       */
+
+const getTemplateFunc: GetTemplateFuncType = (
+  params: GetTemplateFuncParamsType,
+  options: GetTemplateFuncOptionsType = optionsDefault
+) => {
+  return ''
+}
+
+export { getTemplateFunc }
+export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+
+/**
+ * @description Here the file is being run directly
+ * @run ts-node src/Shared/getTemplateFunc.ts
+ * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ */
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      params: GetTemplateFuncParamsType
+      options: GetTemplateFuncOptionsType
+      expected: GetTemplateFuncResType
+    }
+    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { params, options, expected } = example
+
+      const output = await getTemplateFunc(params, options)
+      consoler(`getTemplateFunc [61-${index}]`, {
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}

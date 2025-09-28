@@ -77,7 +77,8 @@ const optionsDefault: Required<GetEmployeeVendorOptionsType> = {
 const resDefault: GetEmployeeVendorResType = ''
 
 /**
- * @description Function to getEmployee
+ * @description Abstract Factory Creates an instance of several families of classes
+ * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects without specifying their concrete classes. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects. Here are some use cases for applying the Abstract Factory pattern:
  * @import import {
     getEmployee,
     GetEmployeeVendorParamsType,
