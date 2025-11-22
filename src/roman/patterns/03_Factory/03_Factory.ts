@@ -58,58 +58,109 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
-
-type GetTemplateFuncOptionsType = { funcParent?: string }
-
-type GetTemplateFuncResType = any
-
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+type GetFactoryParamsType = {
+  type: 'fulltime' | 'parttime' | 'temporary' | 'contractor'
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+type GetFactoryOptionsType = { funcParent?: string }
+
+type GetFactoryResType = {
+  hourly: number
+  type?: 'fulltime' | 'parttime' | 'temporary' | 'contractor'
+}
+
+interface GetFactoryType {
+  (params: GetFactoryParamsType, options?: GetFactoryOptionsType): GetFactoryResType
+}
+
+const optionsDefault: Required<GetFactoryOptionsType> = {
+  funcParent: 'getFactory',
 }
 
 /**
- * @description Function to getTemplateFunc
- * @import import {
-    getTemplateFunc,
-    GetTemplateFuncParamsType,
-    GetTemplateFuncResType 
-  } from './getTemplateFunc'
+ * @description Pattern: Factory Method	Creates an instance of several derived classes
+ * @narrative The Factory Method pattern is a creational design pattern that provides an interface for creating instances of a class, but allows subclasses to alter the type of instances that will be created. It defines an interface for creating objects, but leaves the choice of their type to the subclasses, creating an instance of multiple derived classes.
+ * @import import { getFactory } from './getFactory'
  */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
-  return ''
+const getFullTime = () => {
+  return {
+    hourly: 12,
+  }
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+const getPartTime = () => {
+  return {
+    hourly: 11,
+  }
+}
+
+const getTemporary = () => {
+  return {
+    hourly: 10,
+  }
+}
+
+const getContractor = () => {
+  return {
+    hourly: 15,
+  }
+}
+
+const getFactory: GetFactoryType = ({ type }: GetFactoryParamsType): GetFactoryResType => {
+  const EMPLOYEE: GetFactoryResType = {
+    fulltime: getFullTime,
+    parttime: getPartTime,
+    temporary: getTemporary,
+    contractor: getContractor,
+  }[type]()
+
+  EMPLOYEE.type = type
+
+  return EMPLOYEE
+}
+
+export { getFactory }
+export type { GetFactoryParamsType, GetFactoryResType, GetFactoryOptionsType, GetFactoryType }
 
 /**
- * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @description Pattern: Factory Method	Creates an instance of several derived classes by specifying the type
+ * @narrative The Factory Method pattern is a creational design pattern that provides an interface for creating instances of a class, but allows subclasses to alter the type of instances that will be created. It defines an interface for creating objects, but leaves the choice of their type to the subclasses, creating an instance of multiple derived classes.
+ * @run ts-node src/roman/patterns/03_Factory/03_Factory.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: any // GetFactoryParamsType
+      options: GetFactoryOptionsType
+      expected: GetFactoryResType[]
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'factory pattern usage',
+        params: {
+          types: ['fulltime', 'fulltime', 'fulltime', 'parttime', 'temporary', 'temporary', 'contractor'],
+        },
+        options: {},
+        expected: [
+          { hourly: 12, type: 'fulltime' },
+          { hourly: 12, type: 'fulltime' },
+          { hourly: 12, type: 'fulltime' },
+          { hourly: 11, type: 'parttime' },
+          { hourly: 10, type: 'temporary' },
+          { hourly: 10, type: 'temporary' },
+          { hourly: 15, type: 'contractor' },
+        ],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await params.types.map((type: GetFactoryParamsType['type']) => getFactory({ type }))
+      consoler(`getFactory [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

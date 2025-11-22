@@ -1,7 +1,6 @@
 /**
- * @description Abstract Factory Creates an instance of several families of classes
- * @narrative
-      The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects without specifying their concrete classes. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects. Here are some use cases for applying the Abstract Factory pattern:
+ * @description Abstract Factory Creates an instance of several families of classes by providing a dynamic method of creation
+ * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects and allows subclasses to alter the dynamic method to create instances. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects. Here are some use cases for applying the Abstract Factory pattern:
 
       GUI Libraries:
 
@@ -77,13 +76,9 @@ const optionsDefault: Required<GetEmployeeVendorOptionsType> = {
 const resDefault: GetEmployeeVendorResType = ''
 
 /**
- * @description Abstract Factory Creates an instance of several families of classes
- * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects without specifying their concrete classes. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects. Here are some use cases for applying the Abstract Factory pattern:
- * @import import {
-    getEmployee,
-    GetEmployeeVendorParamsType,
-    GetEmployeeVendorResType 
-  } from './getEmployee'
+ * @description Abstract Factory Creates an instance of several families of classes by providing a dynamic method of creation
+ * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects and allows subclasses to alter the dynamic method to create instances. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects.
+ * @import import { getEmployee } from './getEmployee'
  */
 
 const getEmployee: GetEmployeeVendorType = (
@@ -114,12 +109,11 @@ const getAppliedFactory = (): any => {
 
   const setNum = () => {
     num += 1
-    consoler('getAbstractFactory [116]', { num })
     return
   }
 
   const staff: any[] = []
-  consoler('getAbstractFactory [121]', { num })
+
   return {
     getNum: () => num,
     create: ({ func, ...restParams }: GetAppliedFactoryParamsType) => {
@@ -130,45 +124,64 @@ const getAppliedFactory = (): any => {
   }
 }
 
+type InputArrayItemType = { func: any; name: string }
+type GetAbstractFactoryParamsType = {
+  inputArray: InputArrayItemType[]
+}
+
+interface GetAbstractFactoryType {
+  (params: GetAbstractFactoryParamsType): { name: string; report: string }[]
+}
+
+const getAbstractFactory: GetAbstractFactoryType = ({ inputArray }) => {
+  const factory = getAppliedFactory()
+
+  inputArray.forEach((item: InputArrayItemType) => factory.create(item))
+
+  return factory.getRead()
+}
+
 export { getEmployee }
 export type { GetEmployeeVendorParamsType, GetEmployeeVendorResType, GetEmployeeVendorOptionsType, GetEmployeeVendorType }
 
 /**
- * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/01_Abstract_Factory/getAbstractFactory.ts
+ * @description Abstract Factory Creates an instance of several families of classes by providing a dynamic method of creation
+ * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects and allows subclasses to alter the dynamic method to create instances. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects.
+ * @run ts-node src/roman/patterns/01_Abstract_Factory/01_Abstract_Factory.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
       params: any // GetEmployeeVendorParamsType
       options: GetEmployeeVendorOptionsType
-      expectedFactoryRead: GetEmployeeVendorResType
+      expected: GetEmployeeVendorResType
       expectedNum: number
     }
 
-    const factory = getAppliedFactory()
-    factory.create({
-      func: getEmployee,
-      name: 'Joan DiSilva',
-    })
-    factory.create({
-      func: getEmployee,
-      name: "Tim O'Neill",
-    })
-    factory.create({
-      func: getVendor,
-      name: 'Gerald Watson',
-    })
-    factory.create({
-      func: getVendor,
-      name: 'Nicole McNight',
-    })
-
     const examples: ExampleType[] = [
       {
-        params: {},
+        params: {
+          inputArray: [
+            {
+              func: getEmployee,
+              name: 'Joan DiSilva',
+            },
+            {
+              func: getEmployee,
+              name: "Tim O'Neill",
+            },
+            {
+              func: getVendor,
+              name: 'Gerald Watson',
+            },
+            {
+              func: getVendor,
+              name: 'Nicole McNight',
+            },
+          ],
+        },
         options: {},
-        expectedFactoryRead: [
+        expected: [
           { name: 'Joan DiSilva', report: 'Employee: Joan DiSilva' },
           { name: "Tim O'Neill", report: "Employee: Tim O'Neill" },
           { name: 'Gerald Watson', report: 'Vendor: Gerald Watson' },
@@ -179,17 +192,15 @@ if (require.main === module) {
     ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, expectedFactoryRead, expectedNum } = example
+      const { params, expected, expectedNum } = example
 
-      const factoryRead = await factory.getRead()
+      const output = await getAbstractFactory(params)
       consoler(`getEmployee [61-${index}]`, {
         params,
-        expectedFactoryRead,
-        factoryRead,
-        expectedNum,
-        factoryNum: factory.getNum(),
-        tested: JSON.stringify(factoryRead) === JSON.stringify(expectedFactoryRead),
-        testedNum: JSON.stringify(factory.getNum()) === JSON.stringify(expectedNum),
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+        // testedNum: JSON.stringify(factory.getNum()) === JSON.stringify(expectedNum),
       })
     })
     await Promise.all(promises)

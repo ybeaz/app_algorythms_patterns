@@ -72,58 +72,52 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetMediatorParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetMediatorOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetMediatorResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetMediatorType {
+  (params: GetMediatorParamsType, options?: GetMediatorOptionsType): GetMediatorResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetMediatorOptionsType> = {
+  funcParent: 'getMediator',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getMediator
+ * @import import { getMediator } from './getMediator'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
+const getMediator: GetMediatorType = (params: GetMediatorParamsType, options: GetMediatorOptionsType = optionsDefault) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getMediator }
+export type { GetMediatorParamsType, GetMediatorResType, GetMediatorOptionsType, GetMediatorType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/17_Mediator/17_Mediator.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetMediatorParamsType
+      options: GetMediatorOptionsType
+      expected: GetMediatorResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getMediator(params, options)
+      consoler(`getMediator [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

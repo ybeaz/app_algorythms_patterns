@@ -69,58 +69,52 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetIteratorParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetIteratorOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetIteratorResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetIteratorType {
+  (params: GetIteratorParamsType, options?: GetIteratorOptionsType): GetIteratorResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetIteratorOptionsType> = {
+  funcParent: 'getIterator',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getIterator
+ * @import import { getIterator } from './getIterator'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
+const getIterator: GetIteratorType = (params: GetIteratorParamsType, options: GetIteratorOptionsType = optionsDefault) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getIterator }
+export type { GetIteratorParamsType, GetIteratorResType, GetIteratorOptionsType, GetIteratorType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/16_Iterator/16_Iterator.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetIteratorParamsType
+      options: GetIteratorOptionsType
+      expected: GetIteratorResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getIterator(params, options)
+      consoler(`getIterator [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

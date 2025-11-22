@@ -63,58 +63,55 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetCompositeParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetCompositeOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetCompositeResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetCompositeType {
+  (params: GetCompositeParamsType, options?: GetCompositeOptionsType): GetCompositeResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetCompositeOptionsType> = {
+  funcParent: 'getComposite',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getComposite
+ * @import import { getComposite } from './getComposite'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
+const getComposite: GetCompositeType = (
+  params: GetCompositeParamsType,
+  options: GetCompositeOptionsType = optionsDefault
 ) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getComposite }
+export type { GetCompositeParamsType, GetCompositeResType, GetCompositeOptionsType, GetCompositeType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/08_Composite/08_Composite.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetCompositeParamsType
+      options: GetCompositeOptionsType
+      expected: GetCompositeResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getComposite(params, options)
+      consoler(`getComposite [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

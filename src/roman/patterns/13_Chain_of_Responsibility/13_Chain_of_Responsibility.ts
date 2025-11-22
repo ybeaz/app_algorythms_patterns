@@ -58,58 +58,60 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetChainResposibilityParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetChainResposibilityOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetChainResposibilityResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetChainResposibilityType {
+  (params: GetChainResposibilityParamsType, options?: GetChainResposibilityOptionsType): GetChainResposibilityResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetChainResposibilityOptionsType> = {
+  funcParent: 'getChainResposibility',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getChainResposibility
+ * @import import { getChainResposibility } from './getChainResposibility'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
+const getChainResposibility: GetChainResposibilityType = (
+  params: GetChainResposibilityParamsType,
+  options: GetChainResposibilityOptionsType = optionsDefault
 ) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getChainResposibility }
+export type {
+  GetChainResposibilityParamsType,
+  GetChainResposibilityResType,
+  GetChainResposibilityOptionsType,
+  GetChainResposibilityType,
+}
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/13_Chain_of_Responsibility/13_Chain_of_Responsibility.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetChainResposibilityParamsType
+      options: GetChainResposibilityOptionsType
+      expected: GetChainResposibilityResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getChainResposibility(params, options)
+      consoler(`getChainResposibility [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

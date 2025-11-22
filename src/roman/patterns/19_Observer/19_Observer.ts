@@ -72,58 +72,52 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetObserverParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetObserverOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetObserverResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetObserverType {
+  (params: GetObserverParamsType, options?: GetObserverOptionsType): GetObserverResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetObserverOptionsType> = {
+  funcParent: 'getObserver',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getObserver
+ * @import import { getObserver } from './getObserver'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
+const getObserver: GetObserverType = (params: GetObserverParamsType, options: GetObserverOptionsType = optionsDefault) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getObserver }
+export type { GetObserverParamsType, GetObserverResType, GetObserverOptionsType, GetObserverType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/19_Observer/19_Observer.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetObserverParamsType
+      options: GetObserverOptionsType
+      expected: GetObserverResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getObserver(params, options)
+      consoler(`getObserver [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

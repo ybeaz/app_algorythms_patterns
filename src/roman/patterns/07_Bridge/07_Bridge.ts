@@ -72,58 +72,52 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetBridgeParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetBridgeOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetBridgeResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetBridgeType {
+  (params: GetBridgeParamsType, options?: GetBridgeOptionsType): GetBridgeResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetBridgeOptionsType> = {
+  funcParent: 'getBridge',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getBridge
+ * @import import { getBridge } from './getBridge'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
+const getBridge: GetBridgeType = (params: GetBridgeParamsType, options: GetBridgeOptionsType = optionsDefault) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getBridge }
+export type { GetBridgeParamsType, GetBridgeResType, GetBridgeOptionsType, GetBridgeType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/07_Bridge/07_Bridge.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetBridgeParamsType
+      options: GetBridgeOptionsType
+      expected: GetBridgeResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getBridge(params, options)
+      consoler(`getBridge [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

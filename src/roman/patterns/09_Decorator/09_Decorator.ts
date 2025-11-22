@@ -62,58 +62,55 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetDecoratorParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetDecoratorOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetDecoratorResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetDecoratorType {
+  (params: GetDecoratorParamsType, options?: GetDecoratorOptionsType): GetDecoratorResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetDecoratorOptionsType> = {
+  funcParent: 'getDecorator',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getDecorator
+ * @import import { getDecorator } from './getDecorator'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
+const getDecorator: GetDecoratorType = (
+  params: GetDecoratorParamsType,
+  options: GetDecoratorOptionsType = optionsDefault
 ) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getDecorator }
+export type { GetDecoratorParamsType, GetDecoratorResType, GetDecoratorOptionsType, GetDecoratorType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/09_Decorator/09_Decorator.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetDecoratorParamsType
+      options: GetDecoratorOptionsType
+      expected: GetDecoratorResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getDecorator(params, options)
+      consoler(`getDecorator [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

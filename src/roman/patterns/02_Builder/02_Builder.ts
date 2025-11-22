@@ -1,6 +1,6 @@
 /**
- * @description Pattern: Builder Separates object construction from its representation
- * @narrative The Builder pattern is a creational design pattern that separates the construction of a complex object from its representation, allowing the same construction process to create different representations. Here are some use cases for applying the Builder pattern:
+ * @description Pattern: Builder Separates object construction from its representation by specifying construction steps
+ * @narrative The Builder pattern is a creational design pattern that provides contruction steps and separates a complex object from its representation, allowing the same construction process to create different representations. Here are some use cases for applying the Builder pattern:
 
       Complex Object Construction:
 
@@ -13,7 +13,7 @@
       Immutable Objects:
 
       Scenario: When designing immutable objects that cannot be modified after creation.
-      Use Case: The Builder pattern is useful for creating immutable objects where each method call on the builder returns a new builder instance with the added configuration, leading to a fluent and expressive API.
+      Use Case: The Builder pattern is useful for creating immutable objects where each method call on the getBuilder returns a new getBuilder instance with the added configuration, leading to a fluent and expressive API.
       Configuration with Defaults:
 
       Scenario: When configuring an object with many optional parameters, and default values are applicable.
@@ -33,7 +33,7 @@
       Telescopic Constructor Anti-Pattern:
 
       Scenario: When there is a risk of creating constructors with numerous parameters (telescopic constructors) leading to readability and maintenance issues.
-      Use Case: The Builder pattern offers a cleaner alternative to telescopic constructors by providing a dedicated builder class with fluent methods for configuration.
+      Use Case: The Builder pattern offers a cleaner alternative to telescopic constructors by providing a dedicated getBuilder class with fluent methods for configuration.
       Test Data Generation:
 
       Scenario: In testing scenarios where different instances of an object need to be created with varying configurations.
@@ -71,58 +71,164 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetCarBuilderParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetCarBuilderOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetCarBuilderResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetCarBuilderType {
+  (params: GetCarBuilderParamsType, options?: GetCarBuilderOptionsType): GetCarBuilderResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetCarBuilderOptionsType> = {
+  funcParent: 'getCarBuilder',
 }
 
 /**
- * @description Function to getTemplateFunc
- * @import import {
-    getTemplateFunc,
-    GetTemplateFuncParamsType,
-    GetTemplateFuncResType 
-  } from './getTemplateFunc'
+ * @description Pattern: Builder Separates object construction from its representation by specifying construction steps
+ * @narrative The Builder pattern is a creational design pattern that provides contruction steps and separates a complex object from its representation, allowing the same construction process to create different representations.
+ * @import import { getCarBuilder, getTruckBuilder, CONSTRUCTOR, getBuilder } from './02_Builder'
  */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
+const getCarBuilder: GetCarBuilderType = (
+  { name }: GetCarBuilderParamsType,
+  options: GetCarBuilderOptionsType = optionsDefault
 ) => {
-  return ''
+  const car = {
+    name,
+    cabin: 0,
+    trunk: 0,
+    wheels: 0,
+  }
+
+  const step1 = () => {
+    car.cabin = 1
+  }
+
+  const step2 = (n: number) => {
+    car.trunk = n
+  }
+
+  const step3 = (n: number) => {
+    car.wheels = n
+  }
+
+  const get = () => car
+
+  return {
+    name,
+    step1,
+    step2,
+    step3,
+    get,
+  }
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+const getTruckBuilder: GetCarBuilderType = (
+  { name }: GetCarBuilderParamsType,
+  options: GetCarBuilderOptionsType = optionsDefault
+) => {
+  const car = {
+    name,
+    body: 0,
+    trunk: 0,
+    doors: 0,
+    wheels: 0,
+  }
+
+  const step1 = () => {
+    car.body = 1
+    car.trunk = 1
+  }
+
+  const step2 = (n: number) => {
+    car.doors = n
+  }
+
+  const step3 = (n: number) => {
+    car.wheels = n
+  }
+
+  const get = () => car
+
+  return {
+    step1,
+    step2,
+    step3,
+    get,
+  }
+}
+
+const CONSTRUCTOR = {
+  carBuilder: getCarBuilder,
+  truckBuilder: getTruckBuilder,
+}
+
+type BuilderParamsType = {
+  builderType: keyof typeof CONSTRUCTOR
+  name: string
+  step1Num: number
+  step2Num: number
+  step3Num: number
+}
+
+const getBuilder = ({ builderType, name, step1Num, step2Num, step3Num }: BuilderParamsType) => {
+  const build = CONSTRUCTOR[builderType]({ name })
+  build.step1(step1Num)
+  build.step2(step2Num)
+  build.step3(step3Num)
+
+  return build.get()
+}
+
+export { getCarBuilder, getTruckBuilder, CONSTRUCTOR, getBuilder }
+export type { GetCarBuilderParamsType, GetCarBuilderResType, GetCarBuilderOptionsType, GetCarBuilderType }
 
 /**
- * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @description Pattern: Builder Separates object construction from its representation by specifying construction steps
+ * @narrative The Builder pattern is a creational design pattern that provides contruction steps and separates a complex object from its representation, allowing the same construction process to create different representations.
+ * @run ts-node src/roman/patterns/02_Builder/02_Builder.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetCarBuilderParamsType
+      options?: GetCarBuilderOptionsType
+      expected: GetCarBuilderResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'carBuilder',
+        params: {
+          builderType: 'carBuilder',
+          name: 'Chevrolet',
+          step1Num: 1,
+          step2Num: 4,
+          step3Num: 4,
+        },
+        expected: { name: 'Chevrolet', cabin: 1, trunk: 4, wheels: 4 },
+      },
+      {
+        description: 'truckBuilder',
+        params: {
+          builderType: 'truckBuilder',
+          name: 'Scania',
+          step1Num: 1,
+          step2Num: 2,
+          step3Num: 6,
+        },
+        expected: { name: 'Scania', body: 1, trunk: 1, doors: 2, wheels: 6 },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getBuilder(params)
+      consoler(`getCarBuilder [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

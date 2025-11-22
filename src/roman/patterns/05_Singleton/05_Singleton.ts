@@ -51,62 +51,74 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
-
-type GetTemplateFuncOptionsType = { funcParent?: string }
-
-type GetTemplateFuncResType = any
-
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+const getCreatedInstance = () => {
+  return {
+    prop1: 'prop1',
+    prop2: 'prop2',
+    prop3: 'prop3',
+  }
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+type GetSingletonParamsType = any
+
+type GetSingletonOptionsType = { funcParent?: string }
+
+type GetSingletonResType = any
+
+interface GetSingletonType {
+  (params: GetSingletonParamsType, options?: GetSingletonOptionsType): GetSingletonResType
+}
+
+const optionsDefault: Required<GetSingletonOptionsType> = {
+  funcParent: 'getSingleton',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
-
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
-  return ''
+ * @description Pattern: The Singleton Pattern limits the number of instances of a particular object to just one.
+ * @narrative The Singleton Pattern is a creational design pattern that ensures a class has only one instance and provides a global point of access to that instance.
+ * @import import { getSingleton } from './getSingleton'
+ */
+const getSingleton: GetSingletonType = () => {
+  let instance: any = null
+  return {
+    getInstance: () => {
+      if (!instance) {
+        instance = getCreatedInstance()
+      }
+      return instance
+    },
+  }
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getSingleton }
+export type { GetSingletonParamsType, GetSingletonResType, GetSingletonOptionsType, GetSingletonType }
 
 /**
- * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @description Pattern: The Singleton Pattern limits the number of instances of a particular object to just one.
+ * @narrative The Singleton Pattern is a creational design pattern that ensures a class has only one instance and provides a global point of access to that instance.
+ * @run ts-node src/roman/patterns/05_Singleton/05_Singleton.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetSingletonParamsType
+      options: GetSingletonOptionsType
+      expected: GetSingletonResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: true }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
-        params,
-        expected,
-        output,
-        tested: JSON.stringify(output) === JSON.stringify(expected),
+      const output = await getSingleton(params, options)
+      const instance = await output.getInstance()
+
+      new Array(6).fill(true).forEach((_: boolean, index: number) => {
+        consoler(`getSingleton [120-${index}]`, {
+          output,
+          tested: JSON.stringify(instance) === JSON.stringify(output.getInstance()),
+        })
       })
     })
     await Promise.all(promises)

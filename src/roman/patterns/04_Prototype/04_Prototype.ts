@@ -53,58 +53,76 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
-
-type GetTemplateFuncOptionsType = { funcParent?: string }
-
-type GetTemplateFuncResType = any
-
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+const getCreatedObject = (nameFirst: string, nameLast: string, status: string) => {
+  return {
+    first: nameFirst,
+    last: nameLast,
+    status,
+    // getHello: () => `Hello, my name is ${nameFirst} ${nameLast}.`,
+  }
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+type GetPrototypeParamsType = { inputObj: any }
+
+type GetPrototypeOptionsType = { funcParent?: string }
+
+type GetPrototypeResType = any
+
+interface GetPrototypeType {
+  (inputObj: GetPrototypeParamsType): GetPrototypeResType
+}
+
+const optionsDefault: Required<GetPrototypeOptionsType> = {
+  funcParent: 'getPrototype',
 }
 
 /**
- * @description Function to getTemplateFunc
- * @import import {
-    getTemplateFunc,
-    GetTemplateFuncParamsType,
-    GetTemplateFuncResType 
-  } from './getTemplateFunc'
+ * @description Function to getPrototype
+ * @import import { getPrototype } from './getPrototype'
  */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
-) => {
-  return ''
+const getPrototype: GetPrototypeType = ({ inputObj }: GetPrototypeParamsType) => {
+  return {
+    cloneObj: () => structuredClone(inputObj),
+  }
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getPrototype }
+export type { GetPrototypeParamsType, GetPrototypeResType, GetPrototypeOptionsType, GetPrototypeType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/04_Prototype/04_Prototype.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: [string, string, string]
+      options: GetPrototypeOptionsType
+      expected: GetPrototypeResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Arrow function prototype',
+        params: ['John', 'Smith', 'n/a'],
+        options: {},
+        expected: {
+          first: 'John',
+          last: 'Smith',
+          status: 'n/a',
+          // getHello: () => `Hello, my name is John Smith`
+        },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const inputObj = getCreatedObject(...params)
+      const output = await getPrototype({ inputObj }).cloneObj()
+      consoler(`getPrototype [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,

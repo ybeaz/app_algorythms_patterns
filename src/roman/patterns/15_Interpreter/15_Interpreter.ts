@@ -70,58 +70,55 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateFuncParamsType = any
+type GetInterpreterParamsType = any
 
-type GetTemplateFuncOptionsType = { funcParent?: string }
+type GetInterpreterOptionsType = { funcParent?: string }
 
-type GetTemplateFuncResType = any
+type GetInterpreterResType = any
 
-interface GetTemplateFuncType {
-  (params: GetTemplateFuncParamsType, options?: GetTemplateFuncOptionsType): GetTemplateFuncResType
+interface GetInterpreterType {
+  (params: GetInterpreterParamsType, options?: GetInterpreterOptionsType): GetInterpreterResType
 }
 
-const optionsDefault: Required<GetTemplateFuncOptionsType> = {
-  funcParent: 'getTemplateFunc',
+const optionsDefault: Required<GetInterpreterOptionsType> = {
+  funcParent: 'getInterpreter',
 }
 
 /**
-       * @description Function to getTemplateFunc
-       * @import import {
-          getTemplateFunc,
-          GetTemplateFuncParamsType,
-          GetTemplateFuncResType 
-        } from './getTemplateFunc'
-       */
+ * @description Function to getInterpreter
+ * @import import { getInterpreter } from './getInterpreter'
+ */
 
-const getTemplateFunc: GetTemplateFuncType = (
-  params: GetTemplateFuncParamsType,
-  options: GetTemplateFuncOptionsType = optionsDefault
+const getInterpreter: GetInterpreterType = (
+  params: GetInterpreterParamsType,
+  options: GetInterpreterOptionsType = optionsDefault
 ) => {
   return ''
 }
 
-export { getTemplateFunc }
-export type { GetTemplateFuncParamsType, GetTemplateFuncResType, GetTemplateFuncOptionsType, GetTemplateFuncType }
+export { getInterpreter }
+export type { GetInterpreterParamsType, GetInterpreterResType, GetInterpreterOptionsType, GetInterpreterType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/Shared/getTemplateFunc.ts
- * @test yarn jest getTemplateFunc.test.ts --coverage --collectCoverageFrom="src/Shared/getTemplateFunc.ts"
+ * @run ts-node src/roman/patterns/15_Interpreter/15_Interpreter.ts
  */
 if (require.main === module) {
   ;(async () => {
     type ExampleType = {
-      params: GetTemplateFuncParamsType
-      options: GetTemplateFuncOptionsType
-      expected: GetTemplateFuncResType
+      description?: string
+      params: GetInterpreterParamsType
+      options: GetInterpreterOptionsType
+      expected: GetInterpreterResType
     }
-    const examples: ExampleType[] = [{ params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getTemplateFunc(params, options)
-      consoler(`getTemplateFunc [61-${index}]`, {
+      const output = await getInterpreter(params, options)
+      consoler(`getInterpreter [61-${index}]`, {
+        description: '',
         params,
         expected,
         output,
