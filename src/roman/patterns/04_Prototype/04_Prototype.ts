@@ -1,6 +1,6 @@
 /**
  * @description Pattern: PrototypeA fully initialized instance to be copied or cloned
- * @narrative The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of fully initialized copies or clones. Here are some use cases for applying the Prototype pattern:
+ * @narrative The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of the fully initialized copy or clone. Here are some use cases for applying the Prototype pattern:
 
       Avoiding Costly Object Creation:
 
@@ -77,7 +77,8 @@ const optionsDefault: Required<GetPrototypeOptionsType> = {
 }
 
 /**
- * @description Function to getPrototype
+ * @description Pattern: PrototypeA fully initialized instance to be copied or cloned
+ * @narrative The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of the fully initialized copy or clone.
  * @import import { getPrototype } from './getPrototype'
  */
 
@@ -91,7 +92,8 @@ export { getPrototype }
 export type { GetPrototypeParamsType, GetPrototypeResType, GetPrototypeOptionsType, GetPrototypeType }
 
 /**
- * @description Here the file is being run directly
+ * @description Pattern: PrototypeA fully initialized instance to be copied or cloned
+ * @narrative The Prototype pattern is a creational design pattern that involves creating new objects by copying an existing object, known as the prototype. The prototype serves as a blueprint for creating new instances, allowing for the creation of the fully initialized copy or clone.
  * @run ts-node src/roman/patterns/04_Prototype/04_Prototype.ts
  */
 if (require.main === module) {

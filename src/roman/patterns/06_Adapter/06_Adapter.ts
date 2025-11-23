@@ -64,6 +64,25 @@
 
 import { consoler } from 'yourails_common'
 
+const getShipping = (zipStart: number, zipEnd: number, weight: number) => (zipEnd - zipStart) * weight
+
+const getShippingAdvanced = () => {
+  let zipStart = 0
+  let zipEnd = 0
+
+  return {
+    setZipStart: (zipStartIn: number) => {
+      zipStart = zipStartIn
+    },
+    setZipEnd: (zipEndIn: number) => {
+      zipEnd = zipEndIn
+    },
+    getCalculated: (weight: number) => {
+      return (zipEnd - zipStart) * weight
+    },
+  }
+}
+
 type GetAdapterParamsType = any
 
 type GetAdapterOptionsType = { funcParent?: string }
@@ -71,7 +90,7 @@ type GetAdapterOptionsType = { funcParent?: string }
 type GetAdapterResType = any
 
 interface GetAdapterType {
-  (params: GetAdapterParamsType, options?: GetAdapterOptionsType): GetAdapterResType
+  (params?: GetAdapterParamsType, options?: GetAdapterOptionsType): GetAdapterResType
 }
 
 const optionsDefault: Required<GetAdapterOptionsType> = {
@@ -79,19 +98,31 @@ const optionsDefault: Required<GetAdapterOptionsType> = {
 }
 
 /**
- * @description Function to getAdapter
+ * @description Pattern: Adapter	Match interfaces of different classes
+ * @narrative The Adapter Pattern is a structural design pattern that allows the interfaces of existing classes to be used as another interface. It acts as a bridge between two incompatible interfaces, making them compatible without changing their source code.
  * @import import { getAdapter } from './getAdapter'
  */
 
 const getAdapter: GetAdapterType = (params: GetAdapterParamsType, options: GetAdapterOptionsType = optionsDefault) => {
-  return ''
+  const shippingAdvanced = getShippingAdvanced()
+
+  return {
+    adapter: (zipStart: number, zipEnd: number, weight: number) => {
+      shippingAdvanced.setZipStart(zipStart)
+      shippingAdvanced.setZipEnd(zipEnd)
+      const shippingAdvancedCalculated = shippingAdvanced.getCalculated(weight)
+
+      return shippingAdvancedCalculated
+    },
+  }
 }
 
 export { getAdapter }
 export type { GetAdapterParamsType, GetAdapterResType, GetAdapterOptionsType, GetAdapterType }
 
 /**
- * @description Here the file is being run directly
+ * @description Pattern: Adapter	Match interfaces of different classes
+ * @narrative The Adapter Pattern is a structural design pattern that allows the interfaces of existing classes to be used as another interface. It acts as a bridge between two incompatible interfaces, making them compatible without changing their source code.
  * @run ts-node src/roman/patterns/06_Adapter/06_Adapter.ts
  */
 if (require.main === module) {
@@ -102,18 +133,35 @@ if (require.main === module) {
       options: GetAdapterOptionsType
       expected: GetAdapterResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: '',
+        params: {
+          zipStart: 10400,
+          zipEnd: 10500,
+          weight: 5,
+        },
+        options: {},
+        expected: 500,
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getAdapter(params, options)
+      const { zipStart, zipEnd, weight } = params
+      const output = getShipping(zipStart, zipEnd, weight)
+      const adapter = await getAdapter()
+
+      const outputAdapter = adapter.adapter(zipStart, zipEnd, weight)
+
       consoler(`getAdapter [61-${index}]`, {
         description: '',
         params,
         expected,
-        output,
         tested: JSON.stringify(output) === JSON.stringify(expected),
+        tested2: JSON.stringify(outputAdapter) === JSON.stringify(expected),
+        tested3: JSON.stringify(output) === JSON.stringify(outputAdapter),
       })
     })
     await Promise.all(promises)
