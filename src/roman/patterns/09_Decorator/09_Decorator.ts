@@ -88,15 +88,13 @@ const optionsDefault: Required<GetDecoratorOptionsType> = {
  * @import import { getDecorator } from './getDecorator'
  */
 
-const getDecorator: GetDecoratorType = ({ func, street, city }: GetDecoratorParamsType) => {
-  return (name: string) => {
-    const funcReturn = func(name)
-    return {
-      ...funcReturn,
-      street,
-      city,
-      sayFull: () => `${funcReturn.say()}, Address: ${street}, ${city}`,
-    }
+const getDecorator: GetDecoratorType = ({ func, name, street, city }: GetDecoratorParamsType) => {
+  const funcReturn = func(name)
+  return {
+    ...funcReturn,
+    street,
+    city,
+    sayFull: () => `${funcReturn.say()}, Address: ${street}, ${city}`,
   }
 }
 
@@ -133,7 +131,7 @@ if (require.main === module) {
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { description, params, options, expected } = example
       const { name: nameIn, func, street: streetIn, city: cityIn } = params
-      const outputRaw = await getDecorator({ func, street: streetIn, city: cityIn })(nameIn)
+      const outputRaw = await getDecorator({ func, name: nameIn, street: streetIn, city: cityIn })
 
       const { name, street, city, say, sayFull } = outputRaw
       const said = say()
