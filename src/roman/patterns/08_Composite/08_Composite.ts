@@ -82,15 +82,36 @@ const optionsDefault: Required<GetCompositeOptionsType> = {
  * @import import { getComposite } from './getComposite'
  */
 
-const getComposite: GetCompositeType = (
-  params: GetCompositeParamsType,
-  options: GetCompositeOptionsType = optionsDefault
-) => {
-  return ''
+const getComposite: GetCompositeType = ({ name }: GetCompositeParamsType) => {
+  let children: any[] = []
+
+  return {
+    name,
+    getChildren: () => children,
+    add: (child: any) => {
+      children = [...children, child]
+      consoler('08_Composite [92]', { child, children })
+    },
+    remove: (child: any) => children.filter((item: any) => item.name !== child.name),
+    getChild: (index: number) => children[index],
+    hasChildren: () => !!children.length,
+  }
 }
 
 export { getComposite }
 export type { GetCompositeParamsType, GetCompositeResType, GetCompositeOptionsType, GetCompositeType }
+
+const traverse = (node: any, output = ''): any => {
+  output = `${output}\n--${node.name}\n`
+
+  if (node.hasChildren()) {
+    node.getChildren().forEach((child: any) => {
+      output = traverse(child, output)
+    })
+  }
+
+  return output
+}
 
 /**
  * @description Here the file is being run directly
@@ -107,15 +128,36 @@ if (require.main === module) {
     const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      // const { params, options, expected } = example
 
-      const output = await getComposite(params, options)
+      var tree = getComposite({ name: 'root' })
+      var left = getComposite({ name: 'left' })
+      var right = getComposite({ name: 'right' })
+      var leftleft = getComposite({ name: 'leftleft' })
+      var leftright = getComposite({ name: 'leftright' })
+      var rightleft = getComposite({ name: 'rightleft' })
+      var rightright = getComposite({ name: 'rightright' })
+
+      tree.add(left)
+      tree.add(right)
+      tree.remove(right) // note: remove
+      tree.add(right)
+
+      left.add(leftleft)
+      left.add(leftright)
+
+      right.add(rightleft)
+      right.add(rightright)
+
+      const output = traverse(tree)
+
       consoler(`getComposite [61-${index}]`, {
-        description: '',
-        params,
-        expected,
+        // description: '',
+        // params,
+        // expected,
+        tree,
         output,
-        tested: JSON.stringify(output) === JSON.stringify(expected),
+        // tested: JSON.stringify(output) === JSON.stringify(expected),
       })
     })
     await Promise.all(promises)

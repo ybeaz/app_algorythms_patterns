@@ -40,6 +40,18 @@
       Use Case: The Bridge Pattern can be used to separate the abstraction of sorting from the specific implementations for different data structures, enabling the addition of new sorting algorithms without changing the sorting code.
       In each of these use cases, the Bridge Pattern provides a way to decouple abstraction from implementation, allowing for more flexibility, extensibility, and the ability to add new features without modifying existing code. It helps manage complexity and promotes a modular and scalable design.
 
+      Screen
+      click > "Screen select"
+      move  > "Screen move"
+      drag  > "Sound screetch"
+      zoom  > "Sound volume up"
+
+      Audio
+      click > "Sound oink"
+      move  > "Sound waves"
+      drag  > "Sound screetch"
+      zoom  > "Sound volume up"
+
       Gestures
       output
       tap
@@ -54,49 +66,62 @@
       down
       wheel
 
-      Screen
-      click
-      move
-      drag
-      zoom
-
-      Audio
-      click
-      move
-      drag
-      zoom
-
  * @link https://www.dofactory.com/javascript/design-patterns
  * @command to run `yarn jest 07_Bridge.test`
  */
 
 import { consoler } from 'yourails_common'
 
-type GetBridgeParamsType = any
-
-type GetBridgeOptionsType = { funcParent?: string }
-
-type GetBridgeResType = any
-
-interface GetBridgeType {
-  (params: GetBridgeParamsType, options?: GetBridgeOptionsType): GetBridgeResType
+interface GetMediaType {
+  (): {
+    click: string
+    move: string
+    drag: string
+    zoom: string
+  }
 }
 
-const optionsDefault: Required<GetBridgeOptionsType> = {
-  funcParent: 'getBridge',
+interface GetOutputType {
+  (params: GetMediaType): Record<string, string>
 }
 
-/**
- * @description Function to getBridge
- * @import import { getBridge } from './getBridge'
- */
-
-const getBridge: GetBridgeType = (params: GetBridgeParamsType, options: GetBridgeOptionsType = optionsDefault) => {
-  return ''
+const getScreen: GetMediaType = () => {
+  return {
+    click: 'Screen select',
+    move: 'Screen move',
+    drag: 'Sound screetch',
+    zoom: 'Sound volume up',
+  }
 }
 
-export { getBridge }
-export type { GetBridgeParamsType, GetBridgeResType, GetBridgeOptionsType, GetBridgeType }
+const getAudio: GetMediaType = () => {
+  return {
+    click: 'Sound oink',
+    move: 'Sound waves',
+    drag: 'Sound screetch',
+    zoom: 'Sound volume up',
+  }
+}
+
+const getGestures: GetOutputType = (mediaIn: GetMediaType) => {
+  const output: ReturnType<GetMediaType> = mediaIn()
+  return {
+    tap: output.click,
+    swipe: output.move,
+    pan: output.drag,
+    pinch: output.zoom,
+  }
+}
+
+const getMouse: GetOutputType = (mediaIn: GetMediaType) => {
+  const output: ReturnType<GetMediaType> = mediaIn()
+  return {
+    click: output.click,
+    move: output.move,
+    down: output.drag,
+    wheel: output.zoom,
+  }
+}
 
 /**
  * @description Here the file is being run directly
@@ -106,16 +131,52 @@ if (require.main === module) {
   ;(async () => {
     type ExampleType = {
       description?: string
-      params: GetBridgeParamsType
-      options: GetBridgeOptionsType
-      expected: GetBridgeResType
+      params: {
+        targetActionsFunc: GetOutputType
+        targetMediaFunc: GetMediaType
+      }
+      options: any
+      expected: ReturnType<GetOutputType>
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: '',
+        params: {
+          targetActionsFunc: getGestures,
+          targetMediaFunc: getAudio,
+        },
+        options: {},
+        expected: {
+          tap: 'Sound oink',
+          swipe: 'Sound waves',
+          pan: 'Sound screetch',
+          pinch: 'Sound volume up',
+        },
+      },
+      {
+        description: '',
+        params: {
+          targetActionsFunc: getMouse,
+          targetMediaFunc: getScreen,
+        },
+        options: {},
+        expected: {
+          click: 'Screen select',
+          move: 'Screen move',
+          down: 'Sound screetch',
+          wheel: 'Sound volume up',
+        },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getBridge(params, options)
+      const { targetActionsFunc, targetMediaFunc } = params
+
+      const output = targetActionsFunc(targetMediaFunc)
+
+      // const output = await getBridge(params, options)
       consoler(`getBridge [61-${index}]`, {
         description: '',
         params,

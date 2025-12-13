@@ -62,6 +62,13 @@
 
 import { consoler } from 'yourails_common'
 
+const getUser = (name: string) => {
+  return {
+    name,
+    say: () => `User: ${name}`,
+  }
+}
+
 type GetDecoratorParamsType = any
 
 type GetDecoratorOptionsType = { funcParent?: string }
@@ -81,11 +88,16 @@ const optionsDefault: Required<GetDecoratorOptionsType> = {
  * @import import { getDecorator } from './getDecorator'
  */
 
-const getDecorator: GetDecoratorType = (
-  params: GetDecoratorParamsType,
-  options: GetDecoratorOptionsType = optionsDefault
-) => {
-  return ''
+const getDecorator: GetDecoratorType = ({ func, street, city }: GetDecoratorParamsType) => {
+  return (name: string) => {
+    const funcReturn = func(name)
+    return {
+      ...funcReturn,
+      street,
+      city,
+      sayFull: () => `${funcReturn.say()}, Address: ${street}, ${city}`,
+    }
+  }
 }
 
 export { getDecorator }
@@ -103,14 +115,34 @@ if (require.main === module) {
       options: GetDecoratorOptionsType
       expected: GetDecoratorResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'decorate getUser with address',
+        params: { name: 'John Doe', func: getUser, street: '1875 Sacramento st.', city: 'San Francisco' },
+        options: {},
+        expected: {
+          name: 'John Doe',
+          street: '1875 Sacramento st.',
+          city: 'San Francisco',
+          said: 'User: John Doe',
+          sainFull: 'User: John Doe, Address: 1875 Sacramento st., San Francisco',
+        },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, options, expected } = example
+      const { name: nameIn, func, street: streetIn, city: cityIn } = params
+      const outputRaw = await getDecorator({ func, street: streetIn, city: cityIn })(nameIn)
 
-      const output = await getDecorator(params, options)
+      const { name, street, city, say, sayFull } = outputRaw
+      const said = say()
+      const sainFull = sayFull()
+
+      const output = { name, street, city, said, sainFull }
+
       consoler(`getDecorator [61-${index}]`, {
-        description: '',
+        description,
         params,
         expected,
         output,
