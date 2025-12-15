@@ -54,13 +54,44 @@
       Background
       check
 
+      Mortgage
+      applyFor
+
  * @link https://www.dofactory.com/javascript/design-patterns/facade
  * @command to run `yarn jest patterns/__test__/10_Facade.test.js`
  */
 
 import { consoler } from 'yourails_common'
 
-type GetFacadeParamsType = any
+const getCheckedBackground = (name: string) => {
+  // complex logic here
+  return true
+}
+
+const getCreditScoreSufficient = (name: string) => {
+  // complex logic here
+  return true
+}
+
+const getVerifiedByBank = (name: string, amount: string) => {
+  // complex logic here
+  return true
+}
+
+const getMortgage = (name: string) => {
+  return {
+    applyFor: (amount: string) => {
+      let result = 'approved'
+      if (!getCheckedBackground(name)) result = 'denied'
+      if (!getCreditScoreSufficient(name)) result = 'denied'
+      if (!getVerifiedByBank(name, amount)) result = 'denied'
+
+      return `${name} has been ${result} for a ${amount} mortgage`
+    },
+  }
+}
+
+type GetFacadeParamsType = { name: string; amount: string }
 
 type GetFacadeOptionsType = { funcParent?: string }
 
@@ -79,8 +110,11 @@ const optionsDefault: Required<GetFacadeOptionsType> = {
  * @import import { getFacade } from './getFacade'
  */
 
-const getFacade: GetFacadeType = (params: GetFacadeParamsType, options: GetFacadeOptionsType = optionsDefault) => {
-  return ''
+const getFacade: GetFacadeType = ({ name, amount }: GetFacadeParamsType) => {
+  const mortgage = getMortgage(name)
+  const result = mortgage.applyFor(amount)
+
+  return result
 }
 
 export { getFacade }
@@ -98,7 +132,14 @@ if (require.main === module) {
       options: GetFacadeOptionsType
       expected: GetFacadeResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Basic example',
+        params: { name: 'Joan Templeton', amount: '$100,000' },
+        options: {},
+        expected: 'Joan Templeton has been approved for a $100,000 mortgage',
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
