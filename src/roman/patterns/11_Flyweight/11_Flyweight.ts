@@ -53,7 +53,75 @@
  * @command to run `yarn jest 11_Flyweight.test` 
  */
 
+/**
+BulletType
+  constructor({ sprite, speed, damage })
+  describe()
+
+// FLYWEIGHT FACTORY: creates & caches BulletType instances
+class BulletTypeFactory
+  constructor() cache
+  getBulletType(key, config)
+  get count()
+
+// CONTEXT: individual bullets with extrinsic state (position, direction, owner...)
+class Bullet {
+  constructor({ x, y, direction, type }) 
+  update(dt)
+  render
+
+const pistol = {
+  sprite: "pistol-bullet.png",
+  speed: 500,
+  damage: 10,
+});
+
+const rocket = {
+  sprite: "rocket.png",
+  speed: 200,
+  damage: 80,
+};
+
+// All pistol bullets reuse the *same* BulletType instance
+const bullets = [
+  { x: 0, y: 0, direction: 0, type: pistolType },
+  { x: 10, y: 5, direction: Math.PI / 4, type: pistolType },
+  { x: -5, y: 20, direction: Math.PI / 2, type: pistolType },
+  { x: 100, y: 50, direction: Math.PI, type: rocketType },
+]
+
+
+console.log("Bullet types created:", bulletTypeFactory.count); // 2, not 4
+
+*/
+
+import { rest } from 'lodash-es'
 import { consoler } from 'yourails_common'
+
+type BulletObjType = {
+  sprite: string
+  speed: number
+  damage: number
+}
+const getPistolObj = (): BulletObjType => ({
+  sprite: 'pistol-bullet.png',
+  speed: 500,
+  damage: 10,
+})
+
+const getRocketObj = (): BulletObjType => ({
+  sprite: 'rocket.png',
+  speed: 200,
+  damage: 80,
+})
+
+type GetBulletParamsType = {
+  x: number
+  y: number
+  direction: string
+  type: string
+  typeObj: Record<string, BulletObjType>
+}
 
 type GetFlyweightParamsType = any
 
@@ -74,11 +142,29 @@ const optionsDefault: Required<GetFlyweightOptionsType> = {
  * @import import { getFlyweight } from './getFlyweight'
  */
 
-const getFlyweight: GetFlyweightType = (
-  params: GetFlyweightParamsType,
-  options: GetFlyweightOptionsType = optionsDefault
-) => {
-  return ''
+const getFlyweight: GetFlyweightType = () => {
+  const bulletObjCached: Record<string, any> = {}
+  let bullets: any[] = []
+
+  const updateBulletCollection = ({ x, y, direction, type }: GetBulletParamsType) => {
+    let bulletIntrinsicProps = bulletObjCached[type]
+    if (!bulletIntrinsicProps) {
+      if (type === 'pistol') bulletObjCached['pistol'] = getPistolObj()
+      else if (type === 'rocket') bulletObjCached['rocket'] = getRocketObj()
+      bulletIntrinsicProps = bulletObjCached[type]
+    }
+    bullets.push({ ...bulletIntrinsicProps, x, y, direction })
+  }
+
+  const renderBulletCollection = () => bullets
+
+  const getBulletsObjCached = () => bulletObjCached
+
+  return {
+    updateBulletCollection,
+    renderBulletCollection,
+    getBulletsObjCached,
+  }
 }
 
 export { getFlyweight }
@@ -96,20 +182,159 @@ if (require.main === module) {
       options: GetFlyweightOptionsType
       expected: GetFlyweightResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+
+    const examples: ExampleType[] = [
+      {
+        description: 'Example with bullets',
+        params: {
+          bullets: [
+            { x: 0, y: 0, direction: 0, type: 'pistol' },
+            { x: 10, y: 5, direction: Math.PI / 4, type: 'pistol' },
+            { x: -5, y: 20, direction: Math.PI / 2, type: 'pistol' },
+            { x: 100, y: 50, direction: Math.PI, type: 'rocket' },
+          ],
+        },
+        options: {},
+        expected: { bulletsObjCachedCount: 2, bulletsCount: 4 },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, options, expected } = example
 
-      const output = await getFlyweight(params, options)
+      const { bullets } = params
+
+      const { updateBulletCollection, renderBulletCollection, getBulletsObjCached } = await getFlyweight(params, options)
+
+      bullets.forEach((bullet: any) => updateBulletCollection(bullet))
+      const output = renderBulletCollection()
+      const bulletsCount = output.length
+
+      const bulletsObjCached = getBulletsObjCached()
+      const bulletsObjCachedCount = Object.keys(bulletsObjCached).length
+
       consoler(`getFlyweight [61-${index}]`, {
-        description: '',
+        description,
         params,
         expected,
         output,
-        tested: JSON.stringify(output) === JSON.stringify(expected),
+        bulletsObjCached,
+        bulletsObjCachedCount,
+        bulletsCount,
+        tested: JSON.stringify({ bulletsObjCachedCount, bulletsCount }) === JSON.stringify(expected),
       })
     })
     await Promise.all(promises)
   })()
 }
+
+/*
+
+Here is a small, commented JavaScript example of the **Flyweight pattern**: many game bullets sharing a small set of “bullet types” instead of duplicating data.
+
+```js
+// FLYWEIGHT: shared, immutable data for a kind of bullet
+class BulletType {
+  constructor({ sprite, speed, damage }) {
+    this.sprite = sprite;   // heavy / shared data: image, model, etc.
+    this.speed = speed;     // intrinsic (doesn't change per instance)
+    this.damage = damage;   // intrinsic
+  }
+
+  // Logic that only depends on intrinsic state
+  describe() {
+    return `BulletType(sprite=${this.sprite}, speed=${this.speed}, damage=${this.damage})`;
+  }
+}
+
+// FLYWEIGHT FACTORY: creates & caches BulletType instances
+class BulletTypeFactory {
+  constructor() {
+    this.cache = new Map(); // key -> BulletType
+  }
+
+  getBulletType(key, config) {
+    // If we already created this type, reuse it
+    if (this.cache.has(key)) {
+      return this.cache.get(key);
+    }
+
+    // Otherwise create and store a new flyweight
+    const type = new BulletType(config);
+    this.cache.set(key, type);
+    return type;
+  }
+
+  get count() {
+    return this.cache.size;
+  }
+}
+
+// CONTEXT: individual bullets with extrinsic state (position, direction, owner...)
+class Bullet {
+  constructor({ x, y, direction, type }) {
+    this.x = x;                 // extrinsic (varies per bullet)
+    this.y = y;                 // extrinsic
+    this.direction = direction; // extrinsic
+    this.type = type;           // shared BulletType (flyweight)
+  }
+
+  update(dt) {
+    // Use intrinsic speed, but update extrinsic position
+    this.x += Math.cos(this.direction) * this.type.speed * dt;
+    this.y += Math.sin(this.direction) * this.type.speed * dt;
+  }
+
+  render() {
+    console.log(
+      `Drawing ${this.type.sprite} at (${this.x.toFixed(1)}, ${this.y.toFixed(
+        1
+      )}), damage=${this.type.damage}`
+    );
+  }
+}
+
+// ---------- Usage ----------
+
+// Create one factory for the whole game
+const bulletTypeFactory = new BulletTypeFactory();
+
+// Request some bullet types (flyweights)
+const pistolType = bulletTypeFactory.getBulletType("pistol", {
+  sprite: "pistol-bullet.png",
+  speed: 500,
+  damage: 10,
+});
+
+const rocketType = bulletTypeFactory.getBulletType("rocket", {
+  sprite: "rocket.png",
+  speed: 200,
+  damage: 80,
+});
+
+// All pistol bullets reuse the *same* BulletType instance
+const bullets = [
+  new Bullet({ x: 0, y: 0, direction: 0, type: pistolType }),
+  new Bullet({ x: 10, y: 5, direction: Math.PI / 4, type: pistolType }),
+  new Bullet({ x: -5, y: 20, direction: Math.PI / 2, type: pistolType }),
+  new Bullet({ x: 100, y: 50, direction: Math.PI, type: rocketType }),
+];
+
+console.log("Bullet types created:", bulletTypeFactory.count); // 2, not 4
+
+// Simulate a frame
+for (const b of bullets) {
+  b.update(0.016); // dt ~ 16 ms
+  b.render();
+}
+```
+
+### What this shows
+
+- **Intrinsic state (shared):** `sprite`, `speed`, `damage` live in `BulletType`. Only a *few* `BulletType` objects exist in memory.  
+- **Extrinsic state (per‑instance):** `x`, `y`, `direction` live in `Bullet`. There can be thousands of `Bullet` objects, all pointing to the same `BulletType`.  
+- **Flyweight factory:** `BulletTypeFactory` ensures that for each logical key (`"pistol"`, `"rocket"`), only **one** flyweight is created and reused.
+
+This is exactly what Flyweight is for: **many similar objects, heavy shared data factored out and cached, lightweight per‑instance state kept separate.**
+
+*/
