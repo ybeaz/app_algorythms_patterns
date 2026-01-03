@@ -1,5 +1,5 @@
 /**
- * @description  Pattern: Proxy/Cache  An object representing another object
+ * @description  Pattern: Proxy/Cache  An object representing another object, this is like decorator but with no stable/ changing interface
  * @narrative The Proxy Pattern is a structural design pattern that involves creating a surrogate or placeholder for another object to control access to it. The Proxy Pattern can be used for various purposes, and one specific use case is for creating a Proxy/Cache. Here are some common use cases for applying the Proxy/Cache Pattern:
 
       Lazy Loading of Resources:
@@ -59,7 +59,65 @@
  * @command to run `yarn jest 12_Proxy.test`
  */
 
+/*
+
+// The real object
+class BankAccount {
+  constructor(balance) {
+    this.balance = balance;
+  }
+
+  withdraw(amount) {
+    if (amount <= this.balance) {
+      this.balance -= amount;
+      console.log(`Withdrawal successful! New balance: $${this.balance}`);
+    } else {
+      console.log('Insufficient funds!');
+    }
+  }
+}
+
+// The proxy object
+class BankAccountProxy {
+  constructor(account, userRole) {
+    this.account = account;
+    this.userRole = userRole;
+  }
+
+  withdraw(amount) {
+    if (this.userRole === 'admin' || this.userRole === 'owner') {
+      this.account.withdraw(amount);
+    } else {
+      console.log('Access denied! You cannot withdraw money.');
+    }
+  }
+}
+
+// Usage
+const account = new BankAccount(1000);
+
+// Proxy for a normal user
+const proxyUser = new BankAccountProxy(account, 'guest');
+proxyUser.withdraw(100);  // Access denied! You cannot withdraw money.
+
+// Proxy for the owner
+const proxyOwner = new BankAccountProxy(account, 'owner');
+proxyOwner.withdraw(200); // Withdrawal successful! New balance: $800
+
+
+*/
+
 import { consoler } from 'yourails_common'
+
+const getBankAccount = (balanceIn: number) => {
+  let balance = balanceIn || 0
+  return {
+    withdraw: (amount: number) => {
+      balance = balance - amount
+    },
+    getBalance: () => balance,
+  }
+}
 
 type GetProxyParamsType = any
 
@@ -68,7 +126,7 @@ type GetProxyOptionsType = { funcParent?: string }
 type GetProxyResType = any
 
 interface GetProxyType {
-  (params: GetProxyParamsType, options?: GetProxyOptionsType): GetProxyResType
+  (params?: GetProxyParamsType, options?: GetProxyOptionsType): GetProxyResType
 }
 
 const optionsDefault: Required<GetProxyOptionsType> = {
@@ -80,8 +138,43 @@ const optionsDefault: Required<GetProxyOptionsType> = {
  * @import import { getProxy } from './getProxy'
  */
 
-const getProxy: GetProxyType = (params: GetProxyParamsType, options: GetProxyOptionsType = optionsDefault) => {
-  return ''
+const getProxy: GetProxyType = () => {
+  const accountsCached: Record<string, any> = {}
+  let account: any = {}
+
+  return ({ balanceIn, userType }: any) => {
+    if (accountsCached[balanceIn]) account = accountsCached[balanceIn]
+    else {
+      account = getBankAccount(balanceIn)
+      accountsCached[balanceIn] = account
+    }
+
+    return {
+      withdraw: (amount: number) => {
+        if (userType === 'accountOwner') {
+          account.withdraw(amount)
+          return `access granted`
+        }
+
+        return 'access denied'
+      },
+      getBalance: () => {
+        if (userType === 'accountOwner') {
+          return account.getBalance()
+        }
+
+        return 'access denied'
+      },
+      getAccountsNumCached: () => {
+        if (userType === 'admin') {
+          // console.info('12_Proxy [169]', { accountsCached })
+          return Object.keys(accountsCached).length
+        }
+
+        return 'access denied'
+      },
+    }
+  }
 }
 
 export { getProxy }
@@ -99,14 +192,47 @@ if (require.main === module) {
       options: GetProxyOptionsType
       expected: GetProxyResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Example of proxy pattern with withdrawals and accountOwner',
+        params: { balanceIn: 1000, withdrawals: [100, 150, 250], userType: 'accountOwner' },
+        options: {},
+        expected: { balance: 500, accountsNumCached: 'access denied' },
+      },
+      {
+        description: 'Example of proxy pattern with withdrawals and guest',
+        params: { balanceIn: 1000, withdrawals: [100, 150, 250], userType: 'guest' },
+        options: {},
+        expected: { balance: 'access denied', accountsNumCached: 'access denied' },
+      },
+      {
+        description: 'Example of proxy pattern with withdrawals and admin',
+        params: { balanceIn: 100, withdrawals: [100, 150, 250], userType: 'admin' },
+        options: {},
+        expected: { balance: 'access denied', accountsNumCached: 2 },
+      },
+    ]
+
+    const proxyBase = getProxy()
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, options, expected } = example
 
-      const output = await getProxy(params, options)
+      const { balanceIn, withdrawals, userType } = params
+
+      const proxyAccount = proxyBase({ balanceIn, userType })
+
+      withdrawals.forEach((amount: number) => proxyAccount.withdraw(amount))
+
+      const balance = proxyAccount.getBalance()
+      const accountsNumCached = proxyAccount.getAccountsNumCached()
+      const output = {
+        balance,
+        accountsNumCached,
+      }
+
       consoler(`getProxy [61-${index}]`, {
-        description: '',
+        description,
         params,
         expected,
         output,

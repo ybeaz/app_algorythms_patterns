@@ -114,6 +114,38 @@
 
 import { consoler } from 'yourails_common'
 
+const add = (x: number, y: number) => x + y
+const sub = (x: number, y: number) => x - y
+const mul = (x: number, y: number) => x * y
+const div = (x: number, y: number) => x / y
+
+type CommandType = {
+  execute: any
+  undo: any
+  value: number
+}
+
+const addCommand = (value: number): CommandType => ({
+  execute: add,
+  undo: sub,
+  value,
+})
+const subCommand = (value: number): CommandType => ({
+  execute: sub,
+  undo: add,
+  value,
+})
+const mulCommand = (value: number): CommandType => ({
+  execute: mul,
+  undo: div,
+  value,
+})
+const divCommand = (value: number): CommandType => ({
+  execute: div,
+  undo: mul,
+  value,
+})
+
 type GetCommandParamsType = any
 
 type GetCommandOptionsType = { funcParent?: string }
@@ -133,8 +165,25 @@ const optionsDefault: Required<GetCommandOptionsType> = {
  * @import import { getCommand } from './getCommand'
  */
 
-const getCommand: GetCommandType = (params: GetCommandParamsType, options: GetCommandOptionsType = optionsDefault) => {
-  return ''
+const getCommand: GetCommandType = () => {
+  let current = 0
+  let commands: CommandType[] = []
+
+  return {
+    execute: (command: CommandType) => {
+      const { execute, value } = command
+      current = execute(current, value)
+      commands.push(command)
+    },
+    undo: () => {
+      const command = commands.at(-1) || { undo: () => 0, value: 0 }
+      const { undo, value } = command
+      commands.pop()
+
+      current = undo(current, value)
+    },
+    getCurrentValue: () => current,
+  }
 }
 
 export { getCommand }
@@ -152,12 +201,38 @@ if (require.main === module) {
       options: GetCommandOptionsType
       expected: GetCommandResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: '',
+        params: {
+          commands: [
+            { operationType: 'execute', command: addCommand, value: 100 },
+            { operationType: 'execute', command: subCommand, value: 24 },
+            { operationType: 'execute', command: mulCommand, value: 6 },
+            { operationType: 'execute', command: divCommand, value: 2 },
+            { operationType: 'undo' },
+            { operationType: 'undo' },
+            { operationType: 'getCurrentValue' },
+          ],
+        },
+        options: {},
+        expected: 76,
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
+      const { commands } = params
 
-      const output = await getCommand(params, options)
+      const calculator = await getCommand(params, options)
+
+      let output = 0
+      commands.forEach(({ operationType, command, value }: any) => {
+        if (operationType === 'execute') calculator[operationType](command(value))
+        else if (operationType === 'undo') calculator[operationType]()
+        else output = calculator[operationType]()
+      })
+
       consoler(`getCommand [61-${index}]`, {
         description: '',
         params,

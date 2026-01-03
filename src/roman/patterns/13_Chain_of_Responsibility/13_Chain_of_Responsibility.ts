@@ -58,7 +58,7 @@
 
 import { consoler } from 'yourails_common'
 
-type GetChainResposibilityParamsType = any
+type GetChainResposibilityParamsType = { amount: number; solution?: { bill: number; count: number; balance: number }[] }
 
 type GetChainResposibilityOptionsType = { funcParent?: string }
 
@@ -78,10 +78,21 @@ const optionsDefault: Required<GetChainResposibilityOptionsType> = {
  */
 
 const getChainResposibility: GetChainResposibilityType = (
-  params: GetChainResposibilityParamsType,
+  { amount: amountIn, solution = [] }: GetChainResposibilityParamsType,
   options: GetChainResposibilityOptionsType = optionsDefault
 ) => {
-  return ''
+  let balance = amountIn
+  // let solution: { bill: number; count: number; balance: number }[] = []
+
+  return {
+    get: (bill: number) => {
+      const count = Math.floor(balance / bill)
+      balance = balance - count * bill
+      solution.push({ bill, count, balance })
+      return getChainResposibility({ amount: balance, solution })
+    },
+    getSolution: () => solution,
+  }
 }
 
 export { getChainResposibility }
@@ -104,12 +115,30 @@ if (require.main === module) {
       options: GetChainResposibilityOptionsType
       expected: GetChainResposibilityResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: '',
+        params: { amount: 247 },
+        options: {},
+        expected: [
+          { bill: 100, count: 2, balance: 47 },
+          { bill: 50, count: 0, balance: 47 },
+          { bill: 20, count: 2, balance: 7 },
+          { bill: 10, count: 0, balance: 7 },
+          { bill: 5, count: 1, balance: 2 },
+          { bill: 1, count: 2, balance: 0 },
+        ],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example
 
-      const output = await getChainResposibility(params, options)
+      const chainResposibility = await getChainResposibility(params, options)
+      chainResposibility.get(100).get(50).get(20).get(10).get(5).get(1)
+
+      const output = chainResposibility.getSolution()
+
       consoler(`getChainResposibility [61-${index}]`, {
         description: '',
         params,
