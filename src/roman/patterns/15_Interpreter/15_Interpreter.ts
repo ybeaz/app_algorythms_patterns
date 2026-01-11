@@ -70,7 +70,13 @@
 
 import { consoler } from 'yourails_common'
 
-type GetInterpreterParamsType = any
+type MapItemType = { name: string; one: string; four: string; five: string; nine: string; multiplier: number }
+
+type GetInterpreterParamsType = {
+  map: MapItemType[]
+  input: string
+  output?: number
+}
 
 type GetInterpreterOptionsType = { funcParent?: string }
 
@@ -89,11 +95,29 @@ const optionsDefault: Required<GetInterpreterOptionsType> = {
  * @import import { getInterpreter } from './getInterpreter'
  */
 
-const getInterpreter: GetInterpreterType = (
-  params: GetInterpreterParamsType,
-  options: GetInterpreterOptionsType = optionsDefault
-) => {
-  return ''
+const getInterpreter: GetInterpreterType = ({ map, input: inputIn, output: outputIn = 0 }: GetInterpreterParamsType) => {
+  let input = inputIn
+  let output = outputIn
+
+  map.forEach((mapItem: MapItemType) => {
+    if (input.startsWith(mapItem.nine)) {
+      input = input.substring(2)
+      output += 9 * mapItem.multiplier
+    } else if (input.startsWith(mapItem.four)) {
+      input = input.substring(2)
+      output += 4 * mapItem.multiplier
+    } else if (input.startsWith(mapItem.five)) {
+      input = input.substring(1)
+      output += 5 * mapItem.multiplier
+    } else if (input.startsWith(mapItem.one)) {
+      input = input.substring(1)
+      output += 1 * mapItem.multiplier
+    }
+  })
+
+  if (input.length) output = getInterpreter({ map, input, output })
+
+  return output
 }
 
 export { getInterpreter }
@@ -111,7 +135,22 @@ if (require.main === module) {
       options: GetInterpreterOptionsType
       expected: GetInterpreterResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Interpret Rome number',
+        params: {
+          map: [
+            { name: 'thousand', one: 'M', four: ' ', five: ' ', nine: ' ', multiplier: 1000 },
+            { name: 'hundred', one: 'C', four: 'CD', five: 'D', nine: 'CM', multiplier: 100 },
+            { name: 'ten', one: 'X', four: 'XL', five: 'L', nine: 'XC', multiplier: 10 },
+            { name: 'one', one: 'I', four: 'IV', five: 'V', nine: 'IX', multiplier: 1 },
+          ],
+          input: 'MCMXXVIII',
+        },
+        options: {},
+        expected: 1928,
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
       const { params, options, expected } = example

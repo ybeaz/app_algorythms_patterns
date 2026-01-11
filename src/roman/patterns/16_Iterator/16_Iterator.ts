@@ -69,7 +69,7 @@
 
 import { consoler } from 'yourails_common'
 
-type GetIteratorParamsType = any
+type GetIteratorParamsType = { inputArray: any[] }
 
 type GetIteratorOptionsType = { funcParent?: string }
 
@@ -88,8 +88,39 @@ const optionsDefault: Required<GetIteratorOptionsType> = {
  * @import import { getIterator } from './getIterator'
  */
 
-const getIterator: GetIteratorType = (params: GetIteratorParamsType, options: GetIteratorOptionsType = optionsDefault) => {
-  return ''
+const getIterator: GetIteratorType = (
+  { inputArray }: GetIteratorParamsType,
+  options: GetIteratorOptionsType = optionsDefault
+) => {
+  let index = 0
+  let output: any[] = []
+
+  const reset = () => {
+    output = []
+    index = 0
+  }
+  const first = () => {
+    reset()
+    return inputArray[index]
+  }
+  const hasNext = () => index < inputArray.length
+  const next = () => {
+    index = index + 1
+    return inputArray[index]
+  }
+
+  return {
+    first,
+    hasNext,
+    next,
+    reset,
+    each: (callBack: any) => {
+      for (let item = first(); hasNext(); item = next()) {
+        output.push(callBack(item))
+      }
+    },
+    output: () => output,
+  }
 }
 
 export { getIterator }
@@ -104,15 +135,29 @@ if (require.main === module) {
     type ExampleType = {
       description?: string
       params: GetIteratorParamsType
+      callBack: any
       options: GetIteratorOptionsType
       expected: GetIteratorResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Demonstration of the iterator',
+        params: { inputArray: [1, 2, 3, 4, 5, 6] },
+        callBack: (x: number) => x * 2,
+        options: {},
+        expected: [2, 4, 6, 8, 10, 12],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, callBack, options, expected } = example
 
-      const output = await getIterator(params, options)
+      const iterator = await getIterator(params)
+
+      iterator.each(callBack)
+
+      const output = iterator.output()
+
       consoler(`getIterator [61-${index}]`, {
         description: '',
         params,

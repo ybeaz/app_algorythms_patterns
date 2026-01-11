@@ -1,6 +1,6 @@
 /**
- * @description Pattern: Mediator  Defines simplified communication between classes
- * @narrative The Mediator Pattern is a behavioral design pattern that defines an object (the mediator) that centralizes communication between a set of related objects (colleagues). Here are some common use cases for applying the Mediator Pattern:
+ * @description Pattern: Mediator  Defines simplified communication between classes, by making copies of the object in the mediator and then using these objects for the subsequent communicaiton
+ * @narrative The Mediator Pattern is a behavioral design pattern that defines an object (the mediator) that centralizes communication between a set of related objects (colleagues). The defining characteristics of the Mediator pattern are: objects do not communicate directly with each other, all communication is routed through a central mediator. Your code clearly follows this structure. Mapping your code to the Mediator pattern: Mediator — const getMediator = ({ chatRoom }: GetMediatorParamsType) => { ... }. Responsibilities: registers participants, controls message routing, handles direct messages and broadcasts, keeps message history (messagesSent, messagesReceived). This is the central communication hub. Here are some common use cases for applying the Mediator Pattern:
 
       GUI Components Interaction:
 
@@ -72,11 +72,50 @@
 
 import { consoler } from 'yourails_common'
 
-type GetMediatorParamsType = any
+type GetParticipantResType = {
+  name: string
+  sendTo: any
+  receiveFrom: any
+}
+
+const getParticipant = (name: string): GetParticipantResType => {
+  const sendTo = (message: string, toName: string) => {
+    return { message, fromName: name, toName }
+  }
+
+  const receiveFrom = (message: string, from: any) => {
+    return {
+      fromName: from.name,
+      toName: name,
+      message,
+    }
+  }
+
+  return {
+    name,
+    sendTo,
+    receiveFrom,
+  }
+}
+
+type GetMediatorParamsType = {
+  chatRoom: string
+}
 
 type GetMediatorOptionsType = { funcParent?: string }
 
-type GetMediatorResType = any
+type MessageType = {
+  message: string
+  from: GetParticipantResType
+  to?: GetParticipantResType
+}
+
+type GetMediatorResType = {
+  register: any
+  send: any
+  getParticipants: () => GetParticipantResType[]
+  getMessagesSent: () => MessageType[]
+}
 
 interface GetMediatorType {
   (params: GetMediatorParamsType, options?: GetMediatorOptionsType): GetMediatorResType
@@ -91,8 +130,43 @@ const optionsDefault: Required<GetMediatorOptionsType> = {
  * @import import { getMediator } from './getMediator'
  */
 
-const getMediator: GetMediatorType = (params: GetMediatorParamsType, options: GetMediatorOptionsType = optionsDefault) => {
-  return ''
+const getMediator: GetMediatorType = ({ chatRoom }: GetMediatorParamsType) => {
+  const participants: Record<string, GetParticipantResType> = {}
+  let messagesSent: MessageType[] = []
+  let messagesReceived: MessageType[] = []
+
+  const send = (messageText: string, fromName: string, toName: string) => {
+    if (fromName && participants[fromName] && toName && participants[toName]) {
+      const messageSent = participants[fromName].sendTo(messageText, toName)
+      messagesSent.push(messageSent)
+      const messageReceived = participants[toName].receiveFrom(messageText, fromName)
+      messagesReceived.push(messageReceived)
+    } else if (fromName && participants[fromName]) {
+      Object.keys(participants).forEach((toName: string) => {
+        if (toName !== fromName) {
+          const message = participants[fromName].sendTo(messageText, toName)
+          messagesSent.push(message)
+          const messageReceived = participants[toName].receiveFrom(messageText, fromName)
+          messagesReceived.push(messageReceived)
+        }
+      })
+    }
+  }
+
+  const register = (participantName: string) => {
+    participants[participantName] = getParticipant(participantName)
+  }
+
+  return {
+    send,
+    register,
+    getParticipants: () =>
+      Object.keys(participants).reduce((accum: GetParticipantResType[], key: string) => {
+        accum.push(participants[key])
+        return accum
+      }, []),
+    getMessagesSent: () => messagesSent,
+  }
 }
 
 export { getMediator }
@@ -104,24 +178,96 @@ export type { GetMediatorParamsType, GetMediatorResType, GetMediatorOptionsType,
  */
 if (require.main === module) {
   ;(async () => {
+    type MessageInType = {
+      message: string
+      fromName: string
+      toName?: string
+    }
+
     type ExampleType = {
       description?: string
       params: GetMediatorParamsType
+      participantsNames: string[]
+      messages: MessageInType[]
       options: GetMediatorOptionsType
-      expected: GetMediatorResType
+      expected: MessageInType[]
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Example of Mediator',
+        params: { chatRoom: 'beatlesChat' },
+        participantsNames: ['Yoko', 'John', 'Paul', 'Ringo'],
+        messages: [
+          { fromName: 'Yoko', message: 'All you need is love.' },
+          { fromName: 'Yoko', message: 'I love you John.' },
+          { fromName: 'John', message: 'Hey, no need to broadcast', toName: 'Yoko' },
+          { fromName: 'Paul', message: 'Ha, I heard that!' },
+          { fromName: 'Ringo', message: 'Paul, what do you think?', toName: 'Paul' },
+        ],
+        options: {},
+        expected: [
+          {
+            message: 'All you need is love.',
+            fromName: 'Yoko',
+            toName: 'John',
+          },
+          {
+            message: 'All you need is love.',
+            fromName: 'Yoko',
+            toName: 'Paul',
+          },
+          {
+            message: 'All you need is love.',
+            fromName: 'Yoko',
+            toName: 'Ringo',
+          },
+          { message: 'I love you John.', fromName: 'Yoko', toName: 'John' },
+          { message: 'I love you John.', fromName: 'Yoko', toName: 'Paul' },
+          { message: 'I love you John.', fromName: 'Yoko', toName: 'Ringo' },
+          {
+            message: 'Hey, no need to broadcast',
+            fromName: 'John',
+            toName: 'Yoko',
+          },
+          { message: 'Ha, I heard that!', fromName: 'Paul', toName: 'Yoko' },
+          { message: 'Ha, I heard that!', fromName: 'Paul', toName: 'John' },
+          { message: 'Ha, I heard that!', fromName: 'Paul', toName: 'Ringo' },
+          {
+            message: 'Paul, what do you think?',
+            fromName: 'Ringo',
+            toName: 'Paul',
+          },
+        ],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, participantsNames, messages: messagesIn, expected } = example
 
-      const output = await getMediator(params, options)
-      consoler(`getMediator [61-${index}]`, {
+      const chatRoom = await getMediator(params)
+
+      participantsNames.forEach((participantName: string) => chatRoom.register(participantName))
+      const participantsOfChat = chatRoom.getParticipants()
+
+      messagesIn.forEach((messageIn: MessageInType) => {
+        const { message, fromName, toName } = messageIn
+        // consoler('17_Mediator [209]', { message, fromName, toName })
+        chatRoom.send(message, fromName, toName)
+      })
+
+      const messagesSent: any[] = chatRoom.getMessagesSent()
+      const messagesReceived: any[] = chatRoom.getMessagesSent()
+
+      consoler(`getMediator [215-${index}]`, {
         description: '',
         params,
+        participantsOfChat,
+        messagesSent,
+        messagesReceived,
         expected,
-        output,
-        tested: JSON.stringify(output) === JSON.stringify(expected),
+        tested: JSON.stringify(messagesSent) === JSON.stringify(expected),
+        tested2: JSON.stringify(messagesReceived) === JSON.stringify(expected),
+        tested3: JSON.stringify(messagesSent) === JSON.stringify(messagesReceived),
       })
     })
     await Promise.all(promises)

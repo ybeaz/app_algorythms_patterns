@@ -80,6 +80,13 @@
 
 import { consoler } from 'yourails_common'
 
+const getCreatedPerson = (name: string, street: string, city: string, state: string) => {
+  const getPerson = (name: string, street: string, city: string, state: string) => ({ name, street, city, state })
+  return {
+    ...getPerson(name, street, city, state),
+  }
+}
+
 type GetMementoParamsType = any
 
 type GetMementoOptionsType = { funcParent?: string }
@@ -99,8 +106,22 @@ const optionsDefault: Required<GetMementoOptionsType> = {
  * @import import { getMemento } from './getMemento'
  */
 
-const getMemento: GetMementoType = (params: GetMementoParamsType, options: GetMementoOptionsType = optionsDefault) => {
-  return ''
+const getMemento: GetMementoType = (params: GetMementoParamsType) => {
+  const storage: Record<string, string> = {}
+
+  const getHydrated = (name: string, street: string, city: string, state: string) =>
+    JSON.stringify({ name, street, city, state })
+  const getDeHydrated = (personHydrated: string) => JSON.parse(personHydrated)
+
+  return {
+    add: (key: string, toHydrate: [string, string, string, string]) => {
+      storage[key] = getHydrated(...toHydrate)
+    },
+    getAll: () => storage,
+    get: (key: string) => {
+      return getDeHydrated(storage[key])
+    },
+  }
 }
 
 export { getMemento }
@@ -114,22 +135,73 @@ if (require.main === module) {
   ;(async () => {
     type ExampleType = {
       description?: string
+      peopleData: [string, string, string, string][]
       params: GetMementoParamsType
-      options: GetMementoOptionsType
-      expected: GetMementoResType
+      options?: GetMementoOptionsType
+      expected1: GetMementoResType
+      expected2: GetMementoResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'Example of Memento patern',
+        params: {},
+        peopleData: [
+          ['Mike Foley', '1112 Main', 'Dallas', 'TX'],
+          ['John Wang', '48th Street', 'San Jose', 'CA'],
+        ],
+        expected1: [
+          { name: 'King Kong', street: '1112 Main', city: 'Dallas', state: 'TX' },
+          { name: 'Superman', street: '48th Street', city: 'San Jose', state: 'CA' },
+        ],
+        expected2: [
+          { name: 'Mike Foley', street: '1112 Main', city: 'Dallas', state: 'TX' },
+          { name: 'John Wang', street: '48th Street', city: 'San Jose', state: 'CA' },
+        ],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, peopleData, expected1, expected2 } = example
 
-      const output = await getMemento(params, options)
-      consoler(`getMemento [61-${index}]`, {
+      const memento = await getMemento(params)
+
+      const people = peopleData.reduce((accum: any, personData: [string, string, string, string]) => {
+        const person = getCreatedPerson(...personData)
+        accum[personData[0]] = person
+
+        memento.add(personData[0], personData)
+
+        return accum
+      }, {})
+
+      people['Mike Foley'].name = 'King Kong'
+      people['John Wang'].name = 'Superman'
+
+      let peopleEntries = Object.entries(people).map((entry: any[]) => entry[1])
+
+      consoler(`getMemento [180-${index}]`, {
         description: '',
         params,
-        expected,
-        output,
-        tested: JSON.stringify(output) === JSON.stringify(expected),
+        people,
+        peopleEntries,
+        mementoAll: memento.getAll(),
+        expected1,
+        tested: JSON.stringify(peopleEntries) === JSON.stringify(expected1),
+      })
+
+      people['Mike Foley'] = memento.get('Mike Foley')
+      people['John Wang'] = memento.get('John Wang')
+
+      peopleEntries = Object.entries(people).map((entry: any[]) => entry[1])
+
+      consoler(`getMemento [200-${index}]`, {
+        description: '',
+        params,
+        people,
+        peopleEntries,
+        mementoAll: memento.getAll(),
+        expected2,
+        tested: JSON.stringify(peopleEntries) === JSON.stringify(expected2),
       })
     })
     await Promise.all(promises)
