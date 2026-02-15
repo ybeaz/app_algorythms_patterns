@@ -72,31 +72,42 @@
 
 import { consoler } from 'yourails_common'
 
-type GetObserverParamsType = any
+type GetObservedParamsType = any
 
-type GetObserverOptionsType = { funcParent?: string }
+type GetObservedOptionsType = { funcParent?: string }
 
-type GetObserverResType = any
+type GetObservedResType = any
 
-interface GetObserverType {
-  (params: GetObserverParamsType, options?: GetObserverOptionsType): GetObserverResType
+interface GetObservedType {
+  (params?: GetObservedParamsType, options?: GetObservedOptionsType): GetObservedResType
 }
 
-const optionsDefault: Required<GetObserverOptionsType> = {
-  funcParent: 'getObserver',
+type FireParamsType = {
+  eventID: string
+}
+
+const optionsDefault: Required<GetObservedOptionsType> = {
+  funcParent: 'getObserved',
 }
 
 /**
- * @description Function to getObserver
- * @import import { getObserver } from './getObserver'
+ * @description Function to getObserved
+ * @import import { getObserved } from './getObserved'
  */
 
-const getObserver: GetObserverType = (params: GetObserverParamsType, options: GetObserverOptionsType = optionsDefault) => {
-  return ''
+const getObserved: GetObservedType = (params?: GetObservedParamsType, options?: GetObservedOptionsType) => {
+  const handlers: any[] = []
+
+  return {
+    subscribe: (handler: any) => handlers.push(handler),
+    unSubscribe: (handler: any) => handlers.filter((handlerIn: any) => handler !== handlerIn),
+    fire: (eventID: string) => handlers.map((handler: any) => handler(eventID)),
+    getHandlers: () => handlers,
+  }
 }
 
-export { getObserver }
-export type { GetObserverParamsType, GetObserverResType, GetObserverOptionsType, GetObserverType }
+export { getObserved }
+export type { GetObservedParamsType, GetObservedResType, GetObservedOptionsType, GetObservedType }
 
 /**
  * @description Here the file is being run directly
@@ -106,19 +117,75 @@ if (require.main === module) {
   ;(async () => {
     type ExampleType = {
       description?: string
-      params: GetObserverParamsType
-      options: GetObserverOptionsType
-      expected: GetObserverResType
+      params: GetObservedParamsType
+      options: GetObservedOptionsType
+      expected: GetObservedResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+
+    const handler1 = (eventID: string) => `handler#1 ${eventID} logged`
+    const handler2 = (eventID: string) => `handler#2 ${eventID} logged`
+
+    const examples: ExampleType[] = [
+      // {
+      //   description: 'Example of observer',
+      //   params: {
+      //     toSubscribe: [handler1],
+      //     toUnSubscribe: [],
+      //     toFire: ['eventA', 'eventB', 'eventC'],
+      //   },
+      //   options: {},
+      //   expected: ['handler#1 eventA logged', 'handler#1 eventB logged', 'handler#1 eventC logged'],
+      // },
+      // {
+      //   description: 'Example of observer',
+      //   params: {
+      //     toSubscribe: [handler1, handler2],
+      //     toUnSubscribe: [],
+      //     toFire: ['eventA', 'eventC'],
+      //   },
+      //   options: {},
+      //   expected: [
+      //     'handler#1 eventA logged',
+      //     'handler#1 eventC logged',
+      //     'handler#2 eventA logged',
+      //     'handler#2 eventC logged',
+      //   ],
+      // },
+      {
+        description: 'Example of observer',
+        params: {
+          toSubscribe: [handler1, handler2],
+          toUnSubscribe: [handler1],
+          toFire: ['eventA', 'eventC'],
+        },
+        options: {},
+        expected: ['handler#2 eventA logged', 'handler#2 eventC logged'],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const {
+        description,
+        params: { toSubscribe, toUnSubscribe, toFire },
+        options,
+        expected,
+      } = example
 
-      const output = await getObserver(params, options)
-      consoler(`getObserver [61-${index}]`, {
-        description: '',
-        params,
+      const observed = await getObserved()
+
+      toSubscribe.forEach((handler: any) => observed.subscribe(handler))
+      toUnSubscribe.forEach((handler: any) => observed.unSubscribe(handler))
+      const handlers = observed.getHandlers()
+      const output = toFire
+        .map((eventID: string) => observed.fire(eventID))
+        .flatMap((item: string[][]) => item)
+        .sort()
+
+      consoler(`getObserved [61-${index}]`, {
+        description,
+        toUnSubscribe,
+        // handler: handler1,
+        handlers,
         expected,
         output,
         tested: JSON.stringify(output) === JSON.stringify(expected),

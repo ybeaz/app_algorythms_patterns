@@ -71,6 +71,24 @@
 
 import { consoler } from 'yourails_common'
 
+const getUPS = () => {
+  return {
+    calculate: () => 45,
+  }
+}
+
+const getUSPS = () => {
+  return {
+    calculate: () => 50,
+  }
+}
+
+const getFedex = () => {
+  return {
+    calculate: () => 55,
+  }
+}
+
 type GetStrategyParamsType = any
 
 type GetStrategyOptionsType = { funcParent?: string }
@@ -78,7 +96,7 @@ type GetStrategyOptionsType = { funcParent?: string }
 type GetStrategyResType = any
 
 interface GetStrategyType {
-  (params: GetStrategyParamsType, options?: GetStrategyOptionsType): GetStrategyResType
+  (param?: GetStrategyParamsType, options?: GetStrategyOptionsType): GetStrategyResType
 }
 
 const optionsDefault: Required<GetStrategyOptionsType> = {
@@ -90,8 +108,22 @@ const optionsDefault: Required<GetStrategyOptionsType> = {
  * @import import { getStrategy } from './getStrategy'
  */
 
-const getStrategy: GetStrategyType = (params: GetStrategyParamsType, options: GetStrategyOptionsType = optionsDefault) => {
-  return ''
+type StrategyType = {
+  calculate: () => number
+}
+
+const getStrategy: GetStrategyType = (params?: GetStrategyParamsType, options?: GetStrategyOptionsType) => {
+  let strategy: StrategyType = {
+    calculate: () => 0,
+  }
+  return {
+    setStrategy: (strategyIn: StrategyType) => {
+      strategy = strategyIn
+    },
+    calculate: () => {
+      return strategy.calculate()
+    },
+  }
 }
 
 export { getStrategy }
@@ -109,17 +141,30 @@ if (require.main === module) {
       options: GetStrategyOptionsType
       expected: GetStrategyResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      { description: 'stratefy example with UPS', params: { company: getUPS }, options: {}, expected: 45 },
+      { description: 'stratefy example with USPS', params: { company: getUSPS }, options: {}, expected: 50 },
+      { description: 'stratefy example with Fedex', params: { company: getFedex }, options: {}, expected: 55 },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
-
-      const output = await getStrategy(params, options)
-      consoler(`getStrategy [61-${index}]`, {
-        description: '',
-        params,
+      const {
+        description,
+        params: { company },
+        options,
         expected,
-        output,
+      } = example
+
+      const stategy = await getStrategy()
+
+      stategy.setStrategy(company())
+      const output = stategy.calculate()
+
+      consoler(`getStrategy [61-${index}]`, {
+        description,
+        // params,
+        expected,
+        // output,
         tested: JSON.stringify(output) === JSON.stringify(expected),
       })
     })

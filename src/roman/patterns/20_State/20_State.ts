@@ -71,7 +71,7 @@
 
 import { consoler } from 'yourails_common'
 
-type GetStateParamsType = any
+type GetStateParamsType = { LIGHTS: Record<string, any> }
 
 type GetStateOptionsType = { funcParent?: string }
 
@@ -81,8 +81,29 @@ interface GetStateType {
   (params: GetStateParamsType, options?: GetStateOptionsType): GetStateResType
 }
 
-const optionsDefault: Required<GetStateOptionsType> = {
-  funcParent: 'getState',
+const setRedLight = (stateObj: any) => {
+  return {
+    go: () => {
+      stateObj.change({ stateNow: 'yellow', statePrev: 'red', stateObj })
+    },
+  }
+}
+
+const setYellowLight = (stateObj: any) => {
+  return {
+    go: (stateNow: string, lightPrev: string) => {
+      const stateNext = lightPrev === 'red' ? 'green' : 'red'
+      stateObj.change({ stateNow: stateNext, statePrev: stateNow, stateObj })
+    },
+  }
+}
+
+const setGreenLight = (stateObj: any) => {
+  return {
+    go: () => {
+      stateObj.change({ stateNow: 'yellow', statePrev: 'green', stateObj })
+    },
+  }
 }
 
 /**
@@ -90,8 +111,27 @@ const optionsDefault: Required<GetStateOptionsType> = {
  * @import import { getState } from './getState'
  */
 
-const getState: GetStateType = (params: GetStateParamsType, options: GetStateOptionsType = optionsDefault) => {
-  return ''
+const getState: GetStateType = ({ LIGHTS }: GetStateParamsType) => {
+  let count = 0
+  const store = {
+    stateNow: 'red',
+    statePrev: 'yellow',
+  }
+  const log: string[] = []
+
+  return {
+    change: ({ stateNow, statePrev, stateObj }: { stateNow: string; statePrev: string; stateObj: any }) => {
+      if (count > 10) return
+      if (stateNow) {
+        store.stateNow = stateNow
+        store.statePrev = statePrev
+      }
+      log.push(stateNow)
+      count += 1
+      LIGHTS[stateNow](stateObj).go(stateNow, statePrev)
+    },
+    getLog: () => log,
+  }
 }
 
 export { getState }
@@ -109,14 +149,31 @@ if (require.main === module) {
       options: GetStateOptionsType
       expected: GetStateResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+
+    const LIGHTS: Record<string, any> = {
+      red: setRedLight,
+      yellow: setYellowLight,
+      green: setGreenLight,
+    }
+
+    const examples: ExampleType[] = [
+      {
+        description: 'Example of State design pattern',
+        params: { LIGHTS },
+        options: {},
+        expected: ['red', 'yellow', 'green', 'yellow', 'red', 'yellow', 'green', 'yellow', 'red', 'yellow', 'green'],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, options, expected } = example
 
-      const output = await getState(params, options)
-      consoler(`getState [61-${index}]`, {
-        description: '',
+      const stateObj = await getState(params)
+      stateObj.change({ stateNow: 'red', statePrev: 'yellow', stateObj })
+      const output = stateObj.getLog()
+
+      consoler(`getState [160-${index}]`, {
+        description,
         params,
         expected,
         output,

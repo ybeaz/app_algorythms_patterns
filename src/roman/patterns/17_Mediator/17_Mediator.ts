@@ -85,9 +85,9 @@ const getParticipant = (name: string): GetParticipantResType => {
 
   const receiveFrom = (message: string, from: any) => {
     return {
-      fromName: from.name,
-      toName: name,
       message,
+      fromName: from,
+      toName: name,
     }
   }
 
@@ -115,6 +115,7 @@ type GetMediatorResType = {
   send: any
   getParticipants: () => GetParticipantResType[]
   getMessagesSent: () => MessageType[]
+  getMessagesReceived: () => MessageType[]
 }
 
 interface GetMediatorType {
@@ -166,6 +167,7 @@ const getMediator: GetMediatorType = ({ chatRoom }: GetMediatorParamsType) => {
         return accum
       }, []),
     getMessagesSent: () => messagesSent,
+    getMessagesReceived: () => messagesReceived,
   }
 }
 
@@ -256,7 +258,7 @@ if (require.main === module) {
       })
 
       const messagesSent: any[] = chatRoom.getMessagesSent()
-      const messagesReceived: any[] = chatRoom.getMessagesSent()
+      const messagesReceived: any[] = chatRoom.getMessagesReceived()
 
       consoler(`getMediator [215-${index}]`, {
         description: '',
