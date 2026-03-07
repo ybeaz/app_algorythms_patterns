@@ -68,14 +68,20 @@
 
 import { consoler } from 'yourails_common'
 
-type GetTemplateParamsType = any
+type GetTemplateParamsType = {
+  override?: {
+    connect?: () => string
+    select?: () => string
+    disconnect?: () => string
+  }
+}
 
 type GetTemplateOptionsType = { funcParent?: string }
 
-type GetTemplateResType = any
+type GetTemplateResType = any // typeof getDatastore & ReturnType<typeof getDatastore>
 
 interface GetTemplateType {
-  (params: GetTemplateParamsType, options?: GetTemplateOptionsType): GetTemplateResType
+  (params: GetTemplateParamsType): GetTemplateResType
 }
 
 const optionsDefault: Required<GetTemplateOptionsType> = {
@@ -87,8 +93,24 @@ const optionsDefault: Required<GetTemplateOptionsType> = {
  * @import import { getTemplate } from './getTemplate'
  */
 
-const getTemplate: GetTemplateType = (params: GetTemplateParamsType, options: GetTemplateOptionsType = optionsDefault) => {
-  return ''
+const getTemplate: GetTemplateType = ({ override }: GetTemplateParamsType) => {
+  const template = {
+    process() {
+      return {
+        connectReturn: this.connect(),
+        selectReturn: this.select(),
+        disconnectReturn: this.disconnect(),
+      }
+    },
+    connect: () => undefined,
+    select: () => undefined,
+    disconnect: () => undefined,
+  }
+
+  return {
+    ...template,
+    ...override,
+  }
 }
 
 export { getTemplate }
@@ -104,16 +126,68 @@ if (require.main === module) {
       description?: string
       params: GetTemplateParamsType
       options: GetTemplateOptionsType
-      expected: GetTemplateResType
+      expected: any // GetTemplateResType
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: 'template default method implementation',
+        params: {
+          override: {},
+        },
+        options: {},
+        expected: {
+          connectReturn: undefined,
+          selectReturn: undefined,
+          disconnectReturn: undefined,
+        },
+      },
+      {
+        description: 'first override',
+        params: {
+          override: {
+            connect: () => 'connected v2',
+            select: () => 'selected v2',
+            disconnect: () => 'disconnected v2',
+          },
+        },
+        options: {},
+        expected: {
+          connectReturn: 'connected v2',
+          selectReturn: 'selected v2',
+          disconnectReturn: 'disconnected v2',
+        },
+      },
+      {
+        description: 'second custom full override',
+        params: {
+          override: {
+            connect: () => 'connected v3',
+            select: () => 'selected v3',
+            disconnect: () => 'disconnected v3',
+          },
+        },
+        options: {},
+        expected: {
+          connectReturn: 'connected v3',
+          selectReturn: 'selected v3',
+          disconnectReturn: 'disconnected v3',
+        },
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { description, params, expected } = example
 
-      const output = await getTemplate(params, options)
-      consoler(`getTemplate [61-${index}]`, {
-        description: '',
+      let template: any = getTemplate(params)
+      template.process()
+
+      const output = {
+        connectReturn: template && template?.connect && template?.connect(),
+        selectReturn: template && template?.select && template?.select(),
+        disconnectReturn: template && template?.disconnect && template?.disconnect(),
+      }
+      consoler(`getTemplate [160-${index}]`, {
+        description,
         params,
         expected,
         output,
@@ -123,3 +197,111 @@ if (require.main === module) {
     await Promise.all(promises)
   })()
 }
+
+/*
+
+const getTemplate: GetTemplateType = ({ proto, override }: GetTemplateParamsType) => {
+  const prototyped = proto()
+  const overrides = override()
+
+  return {
+    ...prototyped,
+    ...overrides,
+  }
+}
+
+export { getTemplate }
+export type { GetTemplateParamsType, GetTemplateResType, GetTemplateOptionsType, GetTemplateType }
+
+if (require.main === module) {
+  ;(async () => {
+    type ExampleType = {
+      description?: string
+      params: GetTemplateParamsType
+      paramsAdditional: () => Partial<ReturnType<typeof getDatastoreDefault>>
+      options: GetTemplateOptionsType
+      expected: any // GetTemplateResType
+    }
+    const examples: ExampleType[] = [
+      {
+        description: 'template default method implementation',
+        params: {
+          proto: getDatastoreDefault,
+          override: () => ({}),
+        },
+        paramsAdditional: () => ({}),
+        options: {},
+        expected: {
+          connectReturn: undefined,
+          selectReturn: undefined,
+          disconnectReturn: undefined,
+        },
+      },
+      {
+        description: 'first override',
+        params: {
+          proto: getDatastoreDefault,
+          override: () => ({
+            connect: () => 'connected v2',
+            select: () => 'selected v2',
+            disconnect: () => 'disconnected v2',
+          }),
+        },
+        paramsAdditional: () => ({}),
+        options: {},
+        expected: {
+          connectReturn: 'connected v2',
+          selectReturn: 'selected v2',
+          disconnectReturn: 'disconnected v2',
+        },
+      },
+      {
+        description: 'second custom full override',
+        params: {
+          proto: getDatastoreDefault,
+          override: () => ({
+            connect: () => 'connected',
+            select: () => 'selected',
+            disconnect: () => 'disconnected',
+          }),
+        },
+        paramsAdditional: () => ({
+          connect: () => 'connected v3',
+          select: () => 'selected v3',
+          disconnect: () => 'disconnected v3',
+        }),
+        options: {},
+        expected: {
+          connectReturn: 'connected v3',
+          selectReturn: 'selected v3',
+          disconnectReturn: 'disconnected v3',
+        },
+      },
+    ]
+
+    const promises = examples.map(async (example: ExampleType, index: number) => {
+      const { description, params, paramsAdditional, expected } = example
+
+      let template = getTemplate(params) || {}
+
+      template = { ...template, ...paramsAdditional() }
+
+      const output = {
+        connectReturn: template?.connect(),
+        selectReturn: template?.select(),
+        disconnectReturn: template?.disconnect(),
+      }
+      consoler(`getTemplate [160-${index}]`, {
+        description,
+        params,
+        expected,
+        output,
+        tested: JSON.stringify(output) === JSON.stringify(expected),
+      })
+    })
+    await Promise.all(promises)
+  })()
+}
+
+
+*/

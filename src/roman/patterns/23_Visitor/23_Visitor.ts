@@ -82,11 +82,23 @@
 
 import { consoler } from 'yourails_common'
 
-type GetVisitorParamsType = any
+type GetVisitorParamsType = {
+  name: string
+  salary: number
+  vacation: number
+}
 
 type GetVisitorOptionsType = { funcParent?: string }
 
-type GetVisitorResType = any
+type GetVisitorResType = {
+  getName: () => string
+  setSalary: (salaryIn: number) => void
+  setVacation: (vacationIn: number) => void
+  getSalary: () => number
+  getVacation: () => number
+  accept?: (visitor: GetVisitorResType) => void
+  visit?: (output: GetVisitorResType) => void
+}
 
 interface GetVisitorType {
   (params: GetVisitorParamsType, options?: GetVisitorOptionsType): GetVisitorResType
@@ -101,11 +113,51 @@ const optionsDefault: Required<GetVisitorOptionsType> = {
  * @import import { getVisitor } from './getVisitor'
  */
 
-const getVisitor: GetVisitorType = (params: GetVisitorParamsType, options: GetVisitorOptionsType = optionsDefault) => {
-  return ''
+const getEmployee: GetVisitorType = ({ name: nameIn, salary: salaryIn, vacation: vacationIn }: GetVisitorParamsType) => {
+  let name = nameIn
+  let salary = salaryIn
+  let vacation = vacationIn
+
+  let output: GetVisitorResType = {
+    getName: () => name,
+    setSalary: (salaryIn: number) => {
+      salary = salaryIn
+    },
+    setVacation: (vacationIn: number) => {
+      vacation = vacationIn
+    },
+    getSalary: () => {
+      return salary
+    },
+    getVacation: () => {
+      return vacation
+    },
+  }
+
+  output.accept = (visitor: GetVisitorResType) => {
+    visitor && visitor?.visit && visitor?.visit(output)
+  }
+
+  return output
 }
 
-export { getVisitor }
+const getExtraSalary = () => {
+  return {
+    visit: (emp: any) => {
+      emp.setSalary(emp.getSalary() * 1.1)
+    },
+  }
+}
+
+const getExtraVacation = () => {
+  return {
+    visit: (emp: any) => {
+      emp.setVacation(emp.getVacation() + 2)
+    },
+  }
+}
+
+export { getEmployee }
 export type { GetVisitorParamsType, GetVisitorResType, GetVisitorOptionsType, GetVisitorType }
 
 /**
@@ -116,16 +168,66 @@ if (require.main === module) {
   ;(async () => {
     type ExampleType = {
       description?: string
-      params: GetVisitorParamsType
-      options: GetVisitorOptionsType
-      expected: GetVisitorResType
+      params: { employeesData: GetVisitorParamsType[]; funcs: any[] }
+      options?: GetVisitorOptionsType
+      expected: GetVisitorParamsType[]
     }
-    const examples: ExampleType[] = [{ description: '', params: {}, options: {}, expected: '' }]
+    const examples: ExampleType[] = [
+      {
+        description: '',
+        params: {
+          employeesData: [
+            { name: 'John', salary: 10000, vacation: 10 },
+            { name: 'Mary', salary: 20000, vacation: 21 },
+            { name: 'Boss', salary: 250000, vacation: 5 },
+          ],
+
+          funcs: [],
+        },
+        expected: [
+          { name: 'John', salary: 10000, vacation: 10 },
+          { name: 'Mary', salary: 20000, vacation: 21 },
+          { name: 'Boss', salary: 250000, vacation: 5 },
+        ],
+      },
+      {
+        description: '',
+        params: {
+          employeesData: [
+            { name: 'John', salary: 10000, vacation: 10 },
+            { name: 'Mary', salary: 20000, vacation: 21 },
+            { name: 'Boss', salary: 250000, vacation: 5 },
+          ],
+          funcs: [getExtraSalary, getExtraVacation],
+        },
+        expected: [
+          { name: 'John', salary: 11000, vacation: 12 },
+          { name: 'Mary', salary: 22000, vacation: 23 },
+          { name: 'Boss', salary: 275000, vacation: 7 },
+        ],
+      },
+    ]
 
     const promises = examples.map(async (example: ExampleType, index: number) => {
-      const { params, options, expected } = example
+      const { params, expected } = example
+      const { employeesData, funcs } = params
 
-      const output = await getVisitor(params, options)
+      let output: any = []
+      for await (let employeeData of employeesData) {
+        let employee = await getEmployee(employeeData)
+
+        funcs.forEach((func: any) => {
+          const funcRes = func()
+          employee && employee.accept && employee.accept(funcRes)
+        })
+
+        const name = employee.getName()
+        const salary = employee.getSalary()
+        const vacation = employee.getVacation()
+
+        output.push({ name, salary, vacation })
+      }
+
       consoler(`getVisitor [61-${index}]`, {
         description: '',
         params,
