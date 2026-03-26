@@ -182,7 +182,7 @@ export type { GetProxyParamsType, GetProxyResType, GetProxyOptionsType, GetProxy
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/12_Proxy/12_Proxy.ts
+ * @run npx tsx src/roman/patterns/12_Proxy/12_Proxy.ts
  */
 if (require.main === module) {
   ;(async () => {

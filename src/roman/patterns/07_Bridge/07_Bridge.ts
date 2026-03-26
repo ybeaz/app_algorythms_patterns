@@ -125,7 +125,7 @@ const getMouse: GetOutputType = (mediaIn: GetMediaType) => {
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/07_Bridge/07_Bridge.ts
+ * @run npx tsx src/roman/patterns/07_Bridge/07_Bridge.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -111,7 +111,7 @@ export type { GetObservedParamsType, GetObservedResType, GetObservedOptionsType,
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/19_Observer/19_Observer.ts
+ * @run npx tsx src/roman/patterns/19_Observer/19_Observer.ts
  */
 if (require.main === module) {
   ;(async () => {

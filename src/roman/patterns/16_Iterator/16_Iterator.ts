@@ -128,7 +128,7 @@ export type { GetIteratorParamsType, GetIteratorResType, GetIteratorOptionsType,
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/16_Iterator/16_Iterator.ts
+ * @run npx tsx src/roman/patterns/16_Iterator/16_Iterator.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -41,7 +41,7 @@ const getAreasPromise = ({ shape, values }: GetAreasPromiseParamsType): Promise<
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/getAreasPromise.ts
+ * @run npx tsx src/roman/algorythms/getAreasPromise.ts
  */
 if (require.main === module) {
   ;(async () => {

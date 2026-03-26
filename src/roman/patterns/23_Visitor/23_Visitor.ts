@@ -162,7 +162,7 @@ export type { GetVisitorParamsType, GetVisitorResType, GetVisitorOptionsType, Ge
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/23_Visitor/23_Visitor.ts
+ * @run npx tsx src/roman/patterns/23_Visitor/23_Visitor.ts
  */
 if (require.main === module) {
   ;(async () => {

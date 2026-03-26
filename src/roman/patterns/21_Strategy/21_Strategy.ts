@@ -131,7 +131,7 @@ export type { GetStrategyParamsType, GetStrategyResType, GetStrategyOptionsType,
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/21_Strategy/21_Strategy.ts
+ * @run npx tsx src/roman/patterns/21_Strategy/21_Strategy.ts
  */
 if (require.main === module) {
   ;(async () => {

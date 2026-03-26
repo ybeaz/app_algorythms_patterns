@@ -16,6 +16,7 @@
       "comments": false,
       "strings": false,
     },
+    "editor.inlineSuggest.enabled": false,
     "editor.accessibilitySupport": "off",
     "colorize.languages": ["javascript", "typescript"],
     "js/ts.implicitProjectConfig.strictNullChecks": true,

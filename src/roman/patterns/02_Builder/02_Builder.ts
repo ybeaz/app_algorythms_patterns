@@ -188,7 +188,7 @@ export type { GetCarBuilderParamsType, GetCarBuilderResType, GetCarBuilderOption
 /**
  * @description Pattern: Builder Separates object construction from its representation by specifying construction steps
  * @narrative The Builder pattern is a creational design pattern that provides contruction steps and separates a complex object from its representation, allowing the same construction process to create different representations.
- * @run ts-node src/roman/patterns/02_Builder/02_Builder.ts
+ * @run npx tsx src/roman/patterns/02_Builder/02_Builder.ts
  */
 if (require.main === module) {
   ;(async () => {

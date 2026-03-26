@@ -59,7 +59,7 @@ function addIncrementFunctions(this: MyClass): void {
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get212AddedMethodToMyClass.ts
+ * @run npx tsx src/roman/algorythms/get212AddedMethodToMyClass.ts
  * @run echo 010 | ts-node src/roman/algorythms/get212AddedMethodToMyClass.ts
  * @run echo 110 | ts-node src/roman/algorythms/get212AddedMethodToMyClass.ts
  */

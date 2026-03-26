@@ -57,7 +57,7 @@ export type { GetCurriedFuncParamsType, GetCurriedFuncResType, GetCurriedFuncOpt
     curry(sum)(1, 2, 3); // 6
     curry(sum)(1, 2)(3); // 6
     curry(sum)(1)(2)(3); // 6
- * @run ts-node src/roman/patterns/getCurriedFunc.ts
+ * @run npx tsx src/roman/patterns/getCurriedFunc.ts
  */
 if (require.main === module) {
   ;(async () => {

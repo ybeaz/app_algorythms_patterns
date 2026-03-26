@@ -103,7 +103,7 @@ export type { GetDecoratorParamsType, GetDecoratorResType, GetDecoratorOptionsTy
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/09_Decorator/09_Decorator.ts
+ * @run npx tsx src/roman/patterns/09_Decorator/09_Decorator.ts
  */
 if (require.main === module) {
   ;(async () => {

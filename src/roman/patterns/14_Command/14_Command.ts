@@ -191,7 +191,7 @@ export type { GetCommandParamsType, GetCommandResType, GetCommandOptionsType, Ge
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/14_Command/14_Command.ts
+ * @run npx tsx src/roman/patterns/14_Command/14_Command.ts
  */
 if (require.main === module) {
   ;(async () => {

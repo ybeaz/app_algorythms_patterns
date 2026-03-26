@@ -139,7 +139,7 @@ export type { GetStateParamsType, GetStateResType, GetStateOptionsType, GetState
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/20_State/20_State.ts
+ * @run npx tsx src/roman/patterns/20_State/20_State.ts
  */
 if (require.main === module) {
   ;(async () => {

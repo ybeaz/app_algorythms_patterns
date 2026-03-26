@@ -123,7 +123,7 @@ export type { GetAdapterParamsType, GetAdapterResType, GetAdapterOptionsType, Ge
 /**
  * @description Pattern: Adapter	Match interfaces of different classes
  * @narrative The Adapter Pattern is a structural design pattern that allows the interfaces of existing classes to be used as another interface. It acts as a bridge between two incompatible interfaces, making them compatible without changing their source code.
- * @run ts-node src/roman/patterns/06_Adapter/06_Adapter.ts
+ * @run npx tsx src/roman/patterns/06_Adapter/06_Adapter.ts
  */
 if (require.main === module) {
   ;(async () => {

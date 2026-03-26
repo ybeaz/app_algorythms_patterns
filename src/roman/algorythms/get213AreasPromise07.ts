@@ -6,7 +6,7 @@ const getAreasPromise07 = async (params: GetAreaParamProps07Type[]): Promise<(st
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get213AreasPromise07.ts
+ * @run npx tsx src/roman/algorythms/get213AreasPromise07.ts
  */
 if (require.main === module) {
   ;(async () => {

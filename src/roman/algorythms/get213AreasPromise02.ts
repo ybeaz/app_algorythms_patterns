@@ -41,7 +41,7 @@ const getAreasPromise02 = ({ shape, values }: GetAreasPromiseParams02Type): Prom
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get213AreasPromise02.ts
+ * @run npx tsx src/roman/algorythms/get213AreasPromise02.ts
  */
 if (require.main === module) {
   ;(async () => {

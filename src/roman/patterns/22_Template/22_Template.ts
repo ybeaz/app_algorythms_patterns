@@ -118,7 +118,7 @@ export type { GetTemplateParamsType, GetTemplateResType, GetTemplateOptionsType,
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/22_Template/22_Template.ts
+ * @run npx tsx src/roman/patterns/22_Template/22_Template.ts
  */
 if (require.main === module) {
   ;(async () => {

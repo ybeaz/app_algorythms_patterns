@@ -147,7 +147,7 @@ export type { GetEmployeeVendorParamsType, GetEmployeeVendorResType, GetEmployee
 /**
  * @description Abstract Factory Creates an instance of several families of classes by providing a dynamic method of creation
  * @narrative The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects and allows subclasses to alter the dynamic method to create instances. It involves multiple factory methods, each responsible for creating a different kind of object, forming a family of related objects.
- * @run ts-node src/roman/patterns/01_Abstract_Factory/01_Abstract_Factory.ts
+ * @run npx tsx src/roman/patterns/01_Abstract_Factory/01_Abstract_Factory.ts
  */
 if (require.main === module) {
   ;(async () => {

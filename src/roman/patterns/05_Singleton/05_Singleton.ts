@@ -96,7 +96,7 @@ export type { GetSingletonParamsType, GetSingletonResType, GetSingletonOptionsTy
 /**
  * @description Pattern: The Singleton Pattern limits the number of instances of a particular object to just one.
  * @narrative The Singleton Pattern is a creational design pattern that ensures a class has only one instance and provides a global point of access to that instance.
- * @run ts-node src/roman/patterns/05_Singleton/05_Singleton.ts
+ * @run npx tsx src/roman/patterns/05_Singleton/05_Singleton.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -105,7 +105,7 @@ export type {
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/13_Chain_of_Responsibility/13_Chain_of_Responsibility.ts
+ * @run npx tsx src/roman/patterns/13_Chain_of_Responsibility/13_Chain_of_Responsibility.ts
  */
 if (require.main === module) {
   ;(async () => {

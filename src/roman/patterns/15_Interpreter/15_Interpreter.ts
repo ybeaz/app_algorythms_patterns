@@ -125,7 +125,7 @@ export type { GetInterpreterParamsType, GetInterpreterResType, GetInterpreterOpt
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/15_Interpreter/15_Interpreter.ts
+ * @run npx tsx src/roman/patterns/15_Interpreter/15_Interpreter.ts
  */
 if (require.main === module) {
   ;(async () => {

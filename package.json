@@ -1,5 +1,5 @@
 {
-  "name": "yourails_common",
+  "name": "app_algorythms_patterns",
   "version": "0.13.0",
   "author": "ybeaz",
   "private": false,
@@ -79,7 +79,7 @@
     "ts-node": "^10.9.2",
     "uuid": "^10.0.0",
     "xml-js": "^1.6.11",
-    "yourails_common": "^0.18.3",
+    "yourails_common": "^0.20.3",
     "zlib": "^1.0.5"
   },
   "devDependencies": {
@@ -133,7 +133,5 @@
     "webpackbar": "^5.0.2",
     "yalc": "^1.0.0-pre.53"
   },
-  "engines": {
-    "node": "v20.19.2"
-  }
+  "engines": {}
 }

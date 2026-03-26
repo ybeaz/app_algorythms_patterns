@@ -39,7 +39,7 @@ const getAreasPromise06 = async (params: GetAreaParamProps06Type[]): Promise<(st
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get213AreasPromise06.ts
+ * @run npx tsx src/roman/algorythms/get213AreasPromise06.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -129,7 +129,7 @@ export type { GetMementoParamsType, GetMementoResType, GetMementoOptionsType, Ge
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/18_Memento/18_Memento.ts
+ * @run npx tsx src/roman/patterns/18_Memento/18_Memento.ts
  */
 if (require.main === module) {
   ;(async () => {

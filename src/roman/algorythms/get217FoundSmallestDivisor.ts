@@ -57,7 +57,7 @@ function findSmallestDivisor(s: string, t: string) {
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/getFoundSmallestDivisor.ts
+ * @run npx tsx src/roman/algorythms/getFoundSmallestDivisor.ts
  */
 if (require.main === module) {
   ;(async () => {

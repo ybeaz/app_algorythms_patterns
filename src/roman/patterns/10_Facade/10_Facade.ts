@@ -122,7 +122,7 @@ export type { GetFacadeParamsType, GetFacadeResType, GetFacadeOptionsType, GetFa
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/10_Facade/10_Facade.ts
+ * @run npx tsx src/roman/patterns/10_Facade/10_Facade.ts
  */
 if (require.main === module) {
   ;(async () => {

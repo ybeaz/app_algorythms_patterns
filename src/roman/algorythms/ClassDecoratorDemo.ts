@@ -31,7 +31,7 @@ Object.defineProperty(MyClass.prototype, 'add', descriptor2)
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/modules/mcpServer/toolsPlaywright.service.ts
+ * @run npx tsx src/modules/mcpServer/toolsPlaywright.service.ts
  */
 if (require.main === module) {
   ;(async () => {

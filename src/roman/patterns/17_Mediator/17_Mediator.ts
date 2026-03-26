@@ -176,7 +176,7 @@ export type { GetMediatorParamsType, GetMediatorResType, GetMediatorOptionsType,
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/17_Mediator/17_Mediator.ts
+ * @run npx tsx src/roman/patterns/17_Mediator/17_Mediator.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -5,10 +5,7 @@ type GetTemplateSimpleFuncOptionsType = { funcParent?: string }
 type GetTemplateSimpleFuncResType = any
 
 interface GetTemplateSimpleFuncType {
-  (
-    params: GetTemplateSimpleFuncParamsType,
-    options?: GetTemplateSimpleFuncOptionsType
-  ): GetTemplateSimpleFuncResType
+  (params: GetTemplateSimpleFuncParamsType, options?: GetTemplateSimpleFuncOptionsType): GetTemplateSimpleFuncResType
 }
 
 const optionsDefault: Required<GetTemplateSimpleFuncOptionsType> = {
@@ -19,7 +16,7 @@ const resDefault: GetTemplateSimpleFuncResType = ''
 
 /**
  * @description Function to getTemplateSimpleFunc
- * @run ts-node src/Shared/getTemplateSimpleFunc.ts
+ * @run npx tsx src/Shared/getTemplateSimpleFunc.ts
  * @import import { getTemplateSimpleFunc } from './getTemplateSimpleFunc'
  */
 

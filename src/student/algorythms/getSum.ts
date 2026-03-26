@@ -19,7 +19,7 @@ const resDefault: GetSumResType = 0
 
 /**
  * @description Function to getSum
- * @run ts-node src/Shared/getSum.ts
+ * @run npx tsx src/Shared/getSum.ts
  * @import import { getSum } from './getSum'
  */
 
@@ -33,7 +33,7 @@ export type { GetSumParamsType, GetSumOptionsType, GetSumResType, GetSumType }
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/student/algorythms/getSum.ts
+ * @run npx tsx src/student/algorythms/getSum.ts
  */
 if (require.main === module) {
   ;(async () => {

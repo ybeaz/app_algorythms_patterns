@@ -115,7 +115,7 @@ const traverse = (node: any, output = ''): any => {
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/08_Composite/08_Composite.ts
+ * @run npx tsx src/roman/patterns/08_Composite/08_Composite.ts
  */
 if (require.main === module) {
   ;(async () => {

@@ -172,7 +172,7 @@ export type { GetFlyweightParamsType, GetFlyweightResType, GetFlyweightOptionsTy
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/patterns/11_Flyweight/11_Flyweight.ts
+ * @run npx tsx src/roman/patterns/11_Flyweight/11_Flyweight.ts
  */
 if (require.main === module) {
   ;(async () => {

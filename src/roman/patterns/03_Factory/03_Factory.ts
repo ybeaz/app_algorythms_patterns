@@ -126,7 +126,7 @@ export type { GetFactoryParamsType, GetFactoryResType, GetFactoryOptionsType, Ge
 /**
  * @description Pattern: Factory Method	Creates an instance of several derived classes by specifying the type
  * @narrative The Factory Method pattern is a creational design pattern that provides an interface for creating instances of a class, but allows subclasses to alter the type of instances that will be created. It defines an interface for creating objects, but leaves the choice of their type to the subclasses, creating an instance of multiple derived classes.
- * @run ts-node src/roman/patterns/03_Factory/03_Factory.ts
+ * @run npx tsx src/roman/patterns/03_Factory/03_Factory.ts
  */
 if (require.main === module) {
   ;(async () => {

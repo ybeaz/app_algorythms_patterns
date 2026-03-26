@@ -16,7 +16,7 @@ const get125UpdatedProductCart = (cart: CartItemType[], product: CartItemType): 
 
 /**
  * @description Here the file is being run directly
- * @run ts-node src/roman/algorythms/get125UpdatedProductCart.ts
+ * @run npx tsx src/roman/algorythms/get125UpdatedProductCart.ts
  */
 if (require.main === module) {
   ;(async () => {
