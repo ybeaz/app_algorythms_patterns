@@ -1,7 +1,7 @@
 from typing import TypedDict, Union, Any, Dict, List, Tuple
 from src.sharedPy.getItPrinted import getItPrinted as PRINT, PRINTP, comment
 
-def get080UniqArr(**kwargs) -> list:
+def get117UniqArr(**kwargs) -> list:
   ''' Description: Function check if num is integer
     Import: from src.roman.algorythms.getUniqArr import getUniqArr
     Run: python -m src.roman.algorythms.getUniqArr
@@ -26,7 +26,7 @@ if __name__ == "__main__":
   for kwargs in kwargsList:
     if not isinstance(kwargs, dict):
       raise ValueError("kwargs must be a dictionary")
-    output: list = get080UniqArr(**kwargs)
+    output: list = get117UniqArr(**kwargs)
     num = kwargs['arr']
     expected = kwargs['expected']
     # PRINT({'arr': num, 'expected': expected, 'output': output}, comment())
